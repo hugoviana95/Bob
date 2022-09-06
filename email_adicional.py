@@ -19,15 +19,16 @@ def gera_planilha(id, id2, id3, id4):
 
 
     ####### PLANILHA ALMOX VTC
-    planilha = read_sheets(id, 'Controle de movimentação!L:AA', 'FORMATTED_VALUE')
+    planilha = read_sheets(id, 'Controle de movimentação!A:Z', 'FORMATTED_VALUE')
 
     df = pd.DataFrame(planilha, columns = planilha.pop(0))
-    df = df[['OBSERVAÇÕES', 'Codigo', 'Tipo', 'Projeto/OC', 'Centro', 'Depósito', 'Movimento', 'Descrição', 'Quantidade']]
+    # df = df[['Status', 'Tipo de Movimento', 'Tipo de Projeto', 'OBSERVAÇÕES', 'Codigo', 'Tipo', 'Projeto/OC', 'Centro', 'Depósito', 'Movimento', 'Descrição', 'Quantidade']]
     df = df.loc[df['OBSERVAÇÕES'] == '']
+    df = df.loc[df['Status'] == 'DIRECIONADA AO PCP']
 
     df = pd.merge(df.loc[df['Tipo'] == 'Projeto CCM'], df.loc[df['Tipo'] == 'Projeto KIT'], how = 'outer')
     df = df.sort_values(by=['Projeto/OC'])
-
+    print(df)
     wb = load_workbook('modelo.xlsx')
     sh = wb['MODELO_SOLICITAÇÃO DE RESERVA']
     
@@ -36,14 +37,17 @@ def gera_planilha(id, id2, id3, id4):
     recebedor = '3ST001'
 
     for i in df.values.tolist():
-        centro = int(i[4])
-        cod = int(i[1])
-        movimento = int(i[6])
-        descricao = i[7]
-        qtd = i[8].replace('.', '').replace(',', '.')
+        centro = int(i[17])
+        cod = int(i[19])
+        movimento = int(i[20])
+        descricao = i[21]
+        qtd = i[23].replace('.', '').replace(',', '.')
         qtd = float(qtd)
 
-        num = i[3]
+        num = i[16]
+
+        if num[-5:] == '-SUPR':
+            num = num[:-5]
         try:
             num = int(num[-7:])
             if num > 999999:
@@ -55,6 +59,7 @@ def gera_planilha(id, id2, id3, id4):
                 num = int(i[-6:])
                 prj = 'B-0' + str(num) + '-SUPR'
             except:
+                prj = '-'
                 print('### ERRO AO GERAR PLANILHA DE ADICIONAIS!!! ###')
 
         linha = ['', solicitante, utep, prj, '', ontem, 'SIRTEC', 'FALHA NO ORÇAMENTO', cod, descricao, qtd, 'SUPR', centro, recebedor, movimento]
@@ -85,11 +90,12 @@ def gera_planilha(id, id2, id3, id4):
 
     
     ####### PLANILHA ALMOX GBI
-    planilha = read_sheets(id3, 'Controle de movimentação!P:AD', 'FORMATTED_VALUE')
+    planilha = read_sheets(id3, 'Controle de movimentação!A:AD', 'FORMATTED_VALUE')
 
     df = pd.DataFrame(planilha, columns = planilha.pop(0))
-    df = df[['OBSERVAÇÕES', 'Codigo', 'Tipo', 'Projeto/OC', 'Centro', 'Depósito', 'Movimento', 'Descrição', 'Quantidade']]
+    # df = df[['OBSERVAÇÕES', 'Codigo', 'Tipo', 'Projeto/OC', 'Centro', 'Depósito', 'Movimento', 'Descrição', 'Quantidade']]
     df = df.loc[df['OBSERVAÇÕES'] == '']
+    df = df.loc[df['Status'] == 'DIRECIONADA AO PCP']
 
     df = pd.merge(df.loc[df['Tipo'] == 'Projeto CCM'], df.loc[df['Tipo'] == 'Projeto KIT'], how = 'outer')
     df = df.sort_values(by=['Projeto/OC'])
@@ -99,14 +105,18 @@ def gera_planilha(id, id2, id3, id4):
     recebedor = '3ST700'
 
     for i in df.values.tolist():
-        centro = int(i[4])
-        cod = int(i[1])
-        movimento = int(i[6])
-        descricao = i[7]
-        qtd = i[8].replace('.', '').replace(',', '.')
+        centro = int(i[21])
+        cod = int(i[23])
+        movimento = int(i[24])
+        descricao = i[25]
+        qtd = i[27].replace('.', '').replace(',', '.')
         qtd = float(qtd)
 
-        num = i[3]
+        num = i[21]
+
+        if num[-5:] == '-SUPR':
+            num = num[:-5]
+
         try:
             num = int(num[-7:])
             if num > 999999:
@@ -219,8 +229,9 @@ def email_adicional():
         'brenda.moreira@sirtec.com.br',
         'witon.demetrio@sirtec.com.br',
         'carla.gomes@sirtec.com.br',
-        'debora.silva@sirtec.com.br',
-        'daiane.carvalho@sirtec.com.br'
+        'daiane.carvalho@sirtec.com.br',
+        'iago.dias@sirtec.com.br',
+        'max.filho@sirtec.com.br',
         ]
     )
 
