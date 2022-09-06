@@ -112,7 +112,7 @@ def gera_planilha(id, id2, id3, id4):
         qtd = i[27].replace('.', '').replace(',', '.')
         qtd = float(qtd)
 
-        num = i[21]
+        num = i[20]
 
         if num[-5:] == '-SUPR':
             num = num[:-5]
@@ -213,27 +213,27 @@ def email_adicional():
 
     ################# Planilha VTC
     gera_planilha('1WgK8d1LoqvoHh48s8cAiEPLCKNeTaW4YvIsK_4ksgQY', '1aShY46WRCGR3dFbzPL0Npht-lxR8ioygulHKvF6L6-w', '12PL4LhpQG-btFN7Eio0tCw5aglZ9PM1FkqXuJAj7fhY', '1ibkkR1lk2GXIl2zjfZwbvzAvv4LEZOh8bpXL1xnIwns') 
-    envia_email(
+    # envia_email(
 
-        'reservas.sirtecba@sirtec.com.br',
+    #     'reservas.sirtecba@sirtec.com.br',
 
-        [
-        'rebeca.barbosa@neoenergia.com',
-        'david.sgoncalves@neoenergia.com',
-        'maria.sousa@neoenergia.com',
-        'hugo.viana@sirtec.com.br',
-        'carlos.batista@sirtec.com.br',
-        'henrique.carneiro@sirtec.com.br',
-        'silbene.abreu@sirtec.com.br',
-        'rdasilva@boslan.com',
-        'brenda.moreira@sirtec.com.br',
-        'witon.demetrio@sirtec.com.br',
-        'carla.gomes@sirtec.com.br',
-        'daiane.carvalho@sirtec.com.br',
-        'iago.dias@sirtec.com.br',
-        'max.filho@sirtec.com.br',
-        ]
-    )
+    #     [
+    #     'rebeca.barbosa@neoenergia.com',
+    #     'david.sgoncalves@neoenergia.com',
+    #     'maria.sousa@neoenergia.com',
+    #     'hugo.viana@sirtec.com.br',
+    #     'carlos.batista@sirtec.com.br',
+    #     'henrique.carneiro@sirtec.com.br',
+    #     'silbene.abreu@sirtec.com.br',
+    #     'rdasilva@boslan.com',
+    #     'brenda.moreira@sirtec.com.br',
+    #     'witon.demetrio@sirtec.com.br',
+    #     'carla.gomes@sirtec.com.br',
+    #     'daiane.carvalho@sirtec.com.br',
+    #     'iago.dias@sirtec.com.br',
+    #     'max.filho@sirtec.com.br',
+    #     ]
+    # )
 
 
 if __name__ == '__main__':
