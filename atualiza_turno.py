@@ -21,7 +21,7 @@ def atualiza_turno():
     # COLETA INFORMAÇÕES DO GPM
     url = "https://sirtecba.gpm.srv.br/gpm/geral/consulta_turno.php?tip=C"
     headers = {
-        'cookie': "PHPSESSID=lfadonfifjj9inmnfkg5308d6c"
+        'cookie': "PHPSESSID=elnm3leifj74rb8v6i6is47oi9"
     }
     dia = datetime.now()
     diaehora = dia.strftime("%d/%m/%Y %H:%M")
