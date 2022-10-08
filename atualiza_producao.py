@@ -15,8 +15,8 @@ def buscaCodigoServico(contrato, cookie):
         'cookie': cookie
         }
     data = {
-        "data_inicial": str(dia_menos_sete),
-        "data_final": str(dia),
+        "data_inicial": '15/09/2022',#str(dia_menos_sete),
+        "data_final": '30/09/2022',#str(dia),
         'submit': 'Pesquisar',
         'contrato': contrato,
         'avancaTodos': 'Todas',
@@ -130,7 +130,7 @@ def atualiza_producao():
 
     servicos = read_sheets('1kthDa5_Ed7mfpnye-xpnTzZXkFnBB4veVyxeM9Ti8ds', 'produção!D2:D', 'FORMATTED_VALUE')
     range = len(servicos) + 2
-    cookie = 'PHPSESSID=dtn46itp4bhv1lnnqh30u9n209'
+    cookie = 'PHPSESSID=ubmq5m8thditko9gdll622bh32'
 
     # BUSCA TODOS OS CÓDIGOS DE SERVIÇOS REALIZADOS
     lista_cod_servicos = []
