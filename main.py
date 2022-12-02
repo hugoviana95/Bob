@@ -75,7 +75,7 @@ t.append(threading.Thread(target = v5, name = 'atualiza_v5', daemon = True))
 t.append(threading.Thread(target = asbuilt, name = 'atualiza_asbuilt', daemon = True))
 t.append(threading.Thread(target = faturamento, name = 'faturamento', daemon = True))
 # t.append(threading.Thread(target = adicional, name = 'adicional', daemon = True))
-# t.append(threading.Thread(target = producao_diaria, name = '', daemon = True))
+
 for i in t: 
     i.start()
 
