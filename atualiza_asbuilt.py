@@ -80,8 +80,15 @@ def atualiza_asbuilt():
 
     ####################### PROCURA POR OBRAS CONCLUIÍDAS NAS CARTEIRAS
     obras_concluidas_completo = carteira_geral.query("`STATUS GERAL` == 'CONCLUÍDA'")
+    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'JANEIRO']
+    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'FEVEREIRO']
+    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'MARÇO']
+    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'ABRIL']
+    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'MAIO']
+    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'JUNHO']
     obras_concluidas = obras_concluidas_completo['PROJETO']
     obras_concluidas = obras_concluidas.astype(int)
+
 
     obras_recepcionadas_geral = obras_recepcionadas_geral['PROJETO']
 
@@ -109,14 +116,15 @@ def atualiza_asbuilt():
     projetos_pendente_asbuilt = []
     url = 'https://geoex.com.br/EPS/ConsultarProjeto/Item'
     header = {
-        'cookie': 'ASP.NET_SessionId=yljafhjfyn3bsilygggmqtem; _ga=GA1.1.411518091.1630665766; BaseConhecimento.Informativos.ModoLista=false; TemaEscuro=true; Home.Buscar.Texto=; ConsultarNota.Numero=9101769521; _ga_ZBQMHFHTL8=GS1.1.1660651962.1263.0.1660651962.0; .ASPXAUTH=05C816DCBDA14CC5A7C34D8FEB8F7600B5E40E2B6A722EDF9EC1A680B1239BDDAD5239E81C7E12C96F62C53841DB10F3352C5E4B093F997282942117D6120FDD450B06103DA55D7ECA451E669D22F57395531B9D8675C5C3E9B15621A4D7A2B2AB79785011C43CFADA6C60B37EAFAB9DD086CFDA69883AC37EDC6318C2B920CB88FF36EE3FDFBA5D1B32536A9B7A9BF3940C716E23399F977DF6F5BD83528D3CF2B76327F293D1C07F29BC2B4492B891F70FA40398B85115F98371978A3530B5008FCB7C5C06EB0011F8CB0A1689E641; ConsultarProjeto.Numero=B-1021707'
+        'cookie': '_ga=GA1.1.628028127.1657558275; ASP.NET_SessionId=nwp52xyzz0wdupqpyj514zxf; ConsultarContrato.Contrato=4600053669; ConsultarProjeto.Numero=B-0288287; .ASPXAUTH=FBA25C81F0D213E0F1BC3C3893BF00B481A23531BEF18D47473AF9F6F077A6C62BA39942575A644A6B934BEAA2CA3B739D6EC873BBA678D0F01F8B0C734D12DEB8B17F3506E0A74D5C94F81F2268887CFC0DB24F730202246E817989C6B6D7242AE88DE45996775C0C653E5F3F1BC2A4B821BF6DB1FB75094F05654C62FE2023E4CA84EB703E999CEBDD7CD86EAA363C68B141A8EA629B0158669F2FB219E9887BFB4B8FA29DCF931D61F30557687BAB37B3D2459126F76FC6D8CF7EB80C8A5F041EDDC3569963DD5097D6973397DDA1; _ga_ZBQMHFHTL8=GS1.1.1669976334.401.0.1669976343.0.0.0',
+        'usuarioid': 'e092ed10-dfdd-437c-9fe0-ab6bf9725410'
     }
     for i in obras_concluidas_sem_pasta_no_fechamento:
         resposta = requests.post(url, headers=header, json = {'id': i}).json()
         try:
             status_pasta = resposta['Content']['EnvioPastaStatus']
             if status_pasta == "PASTA PENDENTE DE ENVIO" or status_pasta == "OBRA EM EXECUÇÃO":
-                #print(i)
+                print(i)
                 try:
                     vl_projeto = resposta['Content']['VlProjeto']
                 except:
@@ -145,14 +153,12 @@ def atualiza_asbuilt():
                     supervisor = ''
                 if supervisor[0:3] == 'SUP':
                     supervisor = supervisor[8:]
-                #print(supervisor)
 
                 municipio = obras_concluidas_completo.loc[obras_concluidas_completo['PROJETO'] == str(i)]['MUNICÍPIO'].values
                 if municipio.size > 0:
                     municipio = municipio[-1]
                 else:
                     municipio = ''
-                #print(municipio)
 
                 projetos_pendente_asbuilt.append([unidade, i, titulo, vl_projeto, data_energ, supervisor, municipio])
         except:
@@ -162,7 +168,7 @@ def atualiza_asbuilt():
     df_pendencias = pd.DataFrame(planilha_michelle, columns = planilha_michelle.pop(0))
     projetos = df_pendencias['PROJETO']
     for i in projetos:
-        #print(i)
+        print(i)
         resposta = requests.post(url, headers=header, json = {'id': i}).json()
         try:
             vl_projeto = resposta['Content']['VlProjeto']

@@ -5,7 +5,6 @@ from atualiza_v5 import atualiza_v5
 from atualiza_asbuilt import atualiza_asbuilt
 from faturamento import atualiza_faturamento
 from email_adicional import email_adicional
-from producao_diaria import atualiza_servicos
 from time import sleep
 from datetime import datetime
 
@@ -48,13 +47,6 @@ def faturamento():
         agora = datetime.now().strftime('%H:%M')
         if agora == "05:00":
             atualiza_faturamento()
-        sleep(1)
-
-def producao_diaria():
-    while True:
-        agora = datetime.now().strftime('%H:%M')
-        if agora == "05:30":
-            atualiza_servicos()
         sleep(1)
 
 def adicional():
