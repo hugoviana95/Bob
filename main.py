@@ -5,6 +5,7 @@ from atualiza_v5 import atualiza_v5
 from atualiza_asbuilt import atualiza_asbuilt
 from faturamento import atualiza_faturamento
 from email_adicional import email_adicional
+from atualiza_producao_db import atualiza_producao_db
 from time import sleep
 from datetime import datetime
 
@@ -24,8 +25,7 @@ def asbuilt():
             atualiza_asbuilt()
         except:
             print("Ocorreu algum erro ao atualizar a planilha de as built")
-                   
-
+                  
 def producao():
     while True:
         sleep(3800)
@@ -33,6 +33,14 @@ def producao():
             atualiza_producao()
         except:
             print("Ocorreu algum erro ao atualizar produção")
+
+def producao_db():
+    while True:
+        sleep(3800)
+        try:
+            atualiza_producao_db()
+        except:
+            print("Ocorreu algum erro ao atualizar produção no banco de dados")
 
 def v5():
     while True:
@@ -58,7 +66,7 @@ def adicional():
                 email_adicional()
                 sleep(0.5)
 
-print('BOB v4.2\n')
+print('BOB v4.3\n')
 
 t = []
 t.append(threading.Thread(target = turno, name = 'atualiza_turno', daemon = True))
@@ -66,6 +74,7 @@ t.append(threading.Thread(target = producao, name = 'atualiza_producao', daemon 
 t.append(threading.Thread(target = v5, name = 'atualiza_v5', daemon = True))
 t.append(threading.Thread(target = asbuilt, name = 'atualiza_asbuilt', daemon = True))
 t.append(threading.Thread(target = faturamento, name = 'faturamento', daemon = True))
+t.append(threading.Thread(target = producao_db, name = 'producao_db', daemon = True))
 # t.append(threading.Thread(target = adicional, name = 'adicional', daemon = True))
 
 for i in t: 
@@ -81,5 +90,7 @@ while True:
         atualiza_v5()
     if comando == 'asbuilt':
         atualiza_asbuilt()
+    if comando == 'producaodb':
+        atualiza_producao_db()
     if comando == 'stop':
         break
