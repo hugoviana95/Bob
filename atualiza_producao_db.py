@@ -132,7 +132,7 @@ def atualiza_producao_db():
     dia = agora.date()
 
     hora = agora.strftime('%H:%M')
-    dia_menos_sete = dia - timedelta(3)
+    dia_menos_sete = dia - timedelta(7)
     dta_inicio = dia_menos_sete.strftime("%d/%m/%Y")
     dta_fim = dia.strftime("%d/%m/%Y")
 
