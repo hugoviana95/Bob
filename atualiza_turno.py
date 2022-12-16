@@ -41,17 +41,25 @@ def possui_camera(cod_turno, cookie):
     conteudo = resposta.content
     site = BeautifulSoup(conteudo, "html.parser") #Captura o html da página
 
-    table = site.find("table", attrs={'class': 'tbl_itens'})
-    linhas = table.findAll("tr")
-    try:
-        questao = linhas[18].findAll("td")
-        resposta = questao[1].text
-    except:
-        resposta = '-'
+    head = site.find("div", attrs={'class': 'div_head'})
+    head = head.text
+
+    print(head.find("Checklist Diario Parceiro-EPI"))
+
+    if head.find("Checklist Diario Parceiro-EPI") == 1:
+        return('checklist incorreto')
+    else:
+
+        table = site.find("table", attrs={'class': 'tbl_itens'})
+        linhas = table.findAll("tr")
+        try:
+            questao = linhas[18].findAll("td")
+            resposta = questao[1].text
+        except:
+            resposta = '-'
     
-    
-    # print(site)
-    return(resposta)
+        # print(site)
+        return(resposta)
 
 def atualiza_turno():
     cookie = "PHPSESSID=cium5fgn135jecrml9dq7kuujk"
@@ -154,7 +162,7 @@ def atualiza_turno():
     print(df)
 
 
-    df.to_sql('abertura_turnos', index=False, if_exists='append', con=engine)
+    # df.to_sql('abertura_turnos', index=False, if_exists='append', con=engine)
 
 
 if __name__ == '__main__':
