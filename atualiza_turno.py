@@ -44,8 +44,6 @@ def possui_camera(cod_turno, cookie):
     head = site.find("div", attrs={'class': 'div_head'})
     head = head.text
 
-    print(head.find("Checklist Diario Parceiro-EPI"))
-
     if head.find("Checklist Diario Parceiro-EPI") == 1:
         return('checklist incorreto')
     else:
@@ -54,11 +52,14 @@ def possui_camera(cod_turno, cookie):
         linhas = table.findAll("tr")
         try:
             questao = linhas[18].findAll("td")
-            resposta = questao[1].text
+            pergunta = questao[0].text
+            if pergunta == 'Equipe possui câmera funcional?:':
+                resposta = questao[1].text
+            else:
+                resposta = '-'
         except:
             resposta = '-'
     
-        # print(site)
         return(resposta)
 
 def atualiza_turno():
@@ -75,11 +76,10 @@ def atualiza_turno():
         'cookie': cookie
     }
     dia = datetime.now()
-    diaehora = dia.strftime("%d/%m/%Y %H:%M")
     dia = dia.strftime("%d/%m/%Y")
     data = {
-        "data_inicial": str(dia),
-        "data_final": str(dia),
+        "data_inicial": '16/12/2022',#str(dia),
+        "data_final": '16/12/2022',#str(dia),
         "submit": "Pesquisar",
         "contrato": "11",
         "h_tot": "999",
@@ -107,7 +107,6 @@ def atualiza_turno():
     oito_e_dez = agora.replace(hour=8, minute=10, second=0, microsecond=0)
 
     for i in linhas:
-        cont = 0
         colunas = i.findAll('td')
         if colunas[3].text in turnos_registrados.values:
             continue
@@ -118,7 +117,6 @@ def atualiza_turno():
             elif hora_abertura < oito_e_dez:
                 pontualidade = 1
 
-            print(colunas[3].text)
             resposta = possui_camera(colunas[3].text, cookie)
 
             planilha.append([colunas[3].text, colunas[7].text, colunas[12].text, pontualidade, resposta])
@@ -139,7 +137,6 @@ def atualiza_turno():
         print('Nenhum turno aberto.')
 
     for i in linhas:
-        cont = 0
         colunas = i.findAll('td')
         if colunas[3].text in turnos_registrados.values:
             continue
@@ -150,8 +147,6 @@ def atualiza_turno():
             elif hora_abertura < oito_e_dez:
                 pontualidade = 1
                 
-            print(colunas[3].text)
-
             resposta = possui_camera(colunas[3].text, cookie)
             
             planilha.append([colunas[3].text, colunas[7].text, colunas[12].text, pontualidade, resposta])
@@ -162,7 +157,7 @@ def atualiza_turno():
     print(df)
 
 
-    # df.to_sql('abertura_turnos', index=False, if_exists='append', con=engine)
+    df.to_sql('abertura_turnos', index=False, if_exists='append', con=engine)
 
 
 if __name__ == '__main__':
