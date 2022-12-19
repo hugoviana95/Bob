@@ -44,10 +44,7 @@ def possui_camera(cod_turno, cookie):
     head = site.find("div", attrs={'class': 'div_head'})
     head = head.text
 
-    if head.find("Checklist Diario Parceiro-EPI") == 1:
-        return('checklist incorreto')
-    else:
-
+    if (head.find("Check List Diário - CCM") == 1) or (head.find("Check List Diário - Linha Viva") == 1) or (head.find("Check List Diário - STC") == 1):
         table = site.find("table", attrs={'class': 'tbl_itens'})
         linhas = table.findAll("tr")
         try:
@@ -61,6 +58,10 @@ def possui_camera(cod_turno, cookie):
             resposta = '-'
     
         return(resposta)
+    else:
+        return('checklist incorreto')
+
+
 
 def atualiza_turno():
     cookie = "PHPSESSID=cium5fgn135jecrml9dq7kuujk"
@@ -78,8 +79,8 @@ def atualiza_turno():
     dia = datetime.now()
     dia = dia.strftime("%d/%m/%Y")
     data = {
-        "data_inicial": '16/12/2022',#str(dia),
-        "data_final": '16/12/2022',#str(dia),
+        "data_inicial": str(dia),
+        "data_final": str(dia),
         "submit": "Pesquisar",
         "contrato": "11",
         "h_tot": "999",
