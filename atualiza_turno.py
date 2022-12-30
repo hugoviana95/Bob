@@ -64,7 +64,7 @@ def possui_camera(cod_turno, cookie):
 
 
 def atualiza_turno():
-    cookie = "PHPSESSID=n2dl76skh3vgcous0st2fggico"
+    cookie = "PHPSESSID=26qak1aargp7f8pmbu7gjev40k"
 
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
 
