@@ -67,11 +67,12 @@ def possui_camera(cod_turno, cookie):
 def coleta_infos(cod_contrato, planilha):
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     abertura_turnos = pd.read_sql_table('abertura_turnos', con=engine)
-    cookie = "PHPSESSID=n2dl76skh3vgcous0st2fggico"
+    cookie = "PHPSESSID=26qak1aargp7f8pmbu7gjev40k;"
     turnos_registrados = abertura_turnos['cod_turno_tur']
     url = "https://sirtecba.gpm.srv.br/gpm/geral/consulta_turno.php?tip=C"
     headers = {
-        'cookie': cookie
+        'cookie': cookie,
+        'upgrade-insecure-requests': '1'
     }
     dia = datetime.now()
     dia = dia.strftime("%d/%m/%Y")
@@ -101,20 +102,19 @@ def coleta_infos(cod_contrato, planilha):
 
     agora = datetime.now()
     oito_e_dez = agora.replace(hour=8, minute=10, second=0, microsecond=0)
-    if 'linhas' in globals():
-        for i in linhas:
-            colunas = i.findAll('td')
-            if colunas[3].text in turnos_registrados.values:
-                continue
-            else:
-                hora_abertura = datetime.strptime(colunas[12].text, '%d/%m/%Y %H:%M:%S')
-                if hora_abertura > oito_e_dez:
-                    pontualidade = 0
-                elif hora_abertura < oito_e_dez:
-                    pontualidade = 1
+    for i in linhas:
+        colunas = i.findAll('td')
+        if colunas[3].text in turnos_registrados.values:
+            continue
+        else:
+            hora_abertura = datetime.strptime(colunas[12].text, '%d/%m/%Y %H:%M:%S')
+            if hora_abertura > oito_e_dez:
+                pontualidade = 0
+            elif hora_abertura < oito_e_dez:
+                pontualidade = 1
 
-                resposta = possui_camera(colunas[3].text, cookie)
-                planilha.append([colunas[3].text, colunas[7].text, colunas[12].text, pontualidade, resposta, colunas[11].text])
+            resposta = possui_camera(colunas[3].text, cookie)
+            planilha.append([colunas[3].text, colunas[7].text, colunas[12].text, pontualidade, resposta, colunas[11].text])
 
 def atualiza_turno():
     
