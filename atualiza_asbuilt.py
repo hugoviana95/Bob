@@ -11,31 +11,31 @@ def atualiza_asbuilt():
     print('[' + str(agora) + '] Atualizando planilha de as-built...')
 
     ####################### LENDO CARTEIRAS ONLINE
-    carteira_vtc = read_sheets('1ffjjOM5iTu6JmOuqcM_rHNIvgL3N0wsLRzPbVJ5St0M', 'Carteira Geral!A:AW', 'FORMATTED_VALUE')
+    carteira_vtc = read_sheets('1hIaJaiPm2JNl7ogPcAu8-172flUK2uLaDPs3hyeMQ6g', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_vtc = pd.DataFrame(carteira_vtc, columns = carteira_vtc.pop(0))
     carteira_vtc = carteira_vtc.query("PROJETO != ''")
 
-    carteira_jeq = read_sheets('1FaoZZfOJe1ipGFCcd1TjTkW1gaFFiFHbYkEYrR2ILcw', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
+    carteira_jeq = read_sheets('1EruOLu5kNzq3Vn7Xj4XmgXBOlXXAFhEdmjBWS-rgvWk', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_jeq = pd.DataFrame(carteira_jeq, columns = carteira_jeq.pop(0))
     carteira_jeq = carteira_jeq.query("PROJETO != ''")
 
-    carteira_gbi = read_sheets('1frwOdWK89EKyAKgNIcxvA457NeeGbBQoWKOCaVdC9zE', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
+    carteira_gbi = read_sheets('1OGQse2IeSjxfZ-MRtXFarssQegqlAsZ8ruZaKwar6rY', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_gbi = pd.DataFrame(carteira_gbi, columns = carteira_gbi.pop(0))
     carteira_gbi = carteira_gbi.query("PROJETO != ''")
 
-    carteira_bjl = read_sheets('1o8JAPPUqPF5rVH66XVtwkzjfLZGGA2QecyXAQ1lohpQ', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
+    carteira_bjl = read_sheets('1HLsZcMjsKiqqsKZnU_osIOmKFytkNqBTxKPhdqBzcmg', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_bjl = pd.DataFrame(carteira_bjl, columns = carteira_bjl.pop(0))
     carteira_bjl = carteira_bjl.query("PROJETO != ''")
 
-    carteira_brr = read_sheets('1HodsFNkVEy8PGpMDvqxwGod182LmiEZFuP8HwBBGCus', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
+    carteira_brr = read_sheets('1-xNWYwTWVl9w-eHYGgMzFiV2TPlDCx88y82HnL2wx4U', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_brr = pd.DataFrame(carteira_brr, columns = carteira_brr.pop(0))
     carteira_brr = carteira_brr.query("PROJETO != ''")
 
-    carteira_ire = read_sheets('1q9k3TB_vi1IcIvg5FD4Crpe6teqbHvDx1sIEszzAA1U', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
+    carteira_ire = read_sheets('1gFStrS82U7PRX5gBd9jVvYVdkUDAYNFamNxoFATL2kc', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_ire = pd.DataFrame(carteira_ire, columns = carteira_ire.pop(0))
     carteira_ire = carteira_ire.query("PROJETO != ''")
 
-    carteira_ibt = read_sheets('1eAdIlj44V7HWELC9rht3FXsf5GQWg9SHSt6KMIPkCi0', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
+    carteira_ibt = read_sheets('1Fo2obLTZObf33d2vA_1GbzPzxCU1egJdX9okIF06oDo', 'CARTEIRA!A:AS', 'FORMATTED_VALUE')
     carteira_ibt = pd.DataFrame(carteira_ibt, columns = carteira_ibt.pop(0))
     carteira_ibt = carteira_ibt.query("PROJETO != ''")
 
@@ -80,12 +80,12 @@ def atualiza_asbuilt():
 
     ####################### PROCURA POR OBRAS CONCLUIÍDAS NAS CARTEIRAS
     obras_concluidas_completo = carteira_geral.query("`STATUS GERAL` == 'CONCLUÍDA'")
-    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'JANEIRO']
-    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'FEVEREIRO']
-    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'MARÇO']
-    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'ABRIL']
-    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'MAIO']
-    obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'JUNHO']
+    # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'JANEIRO']
+    # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'FEVEREIRO']
+    # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'MARÇO']
+    # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'ABRIL']
+    # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'MAIO']
+    # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != 'JUNHO']
     obras_concluidas = obras_concluidas_completo['PROJETO']
     obras_concluidas = obras_concluidas.astype(int)
 
@@ -116,7 +116,7 @@ def atualiza_asbuilt():
     projetos_pendente_asbuilt = []
     url = 'https://geoex.com.br/EPS/ConsultarProjeto/Item'
     header = {
-        'cookie': '_ga=GA1.1.628028127.1657558275; TemaEscuro=true; BaseConhecimento.Informativos.ModoLista=true; Home.Buscar.Texto=; ConsultarContrato.Contrato=4600053669; ConsultarNota.Numero=9101268118; ASP.NET_SessionId=nrn1liphf415ibelpmy4luwu; ConsultarProjeto.Numero=B-1056104; _ga_ZBQMHFHTL8=GS1.1.1672084692.467.0.1672084692.0.0.0; .ASPXAUTH=11F1929B69C86D95AF5F85B8696AA8158BF9A445845CE0A8AE31F4B83B2CB7859757CEDAD2AEED747A460D2C85BDE0628C371B5B88691853E251A40D015F703D2F7A7CF1FE29B86D24637632FBE34224C1472B43234974B346C19C222A817373825D4F55F9E999C53067FE3AA3B202B088FBFC092A32F7181E813D199A1102FEA0BCF11115738A72BE956533FFD16B8A1FC2BE01E4A3BB411DDDDAD57A3D5D0FB186D0D6A49B8217D10AF1D9DF4DE0D9B0E328AD81C766DAA859D7B156EAD1FC8C37D1762F5F7A7A954BB20662582C24',
+        'cookie': '_ga=GA1.1.628028127.1657558275; TemaEscuro=true; BaseConhecimento.Informativos.ModoLista=true; Home.Buscar.Texto=; ConsultarContrato.Contrato=4600053669; ASP.NET_SessionId=riazsdsygtincff021r1brss; ConsultarNota.Numero=9101900448; .ASPXAUTH=44EBF3CC1A239842B62C94A6F544E8CC48ED89365C5CDCFA040A3BCD4708E286760503E8B4EFA361DE9671FA2FE3BC4A8368E5CD2FF63D63AA826274096276BADB0C732C6F3C80B62A35CC5756B02F80E808A621EA1B2D2FDD099FA81DA6F4F2EF2CCBCE3D70FD3309F3E4BE561755A2C2FE4E16836FBA7857670BE6876FDEE2B15CA656106D89AF1534292333D0F5E09B3C7F1326DE4C7ABE76E35FE9AE2E2B8AB5466AFB2E8115D76CE4EA32C436A4A8C8064B093800D72FB75574A2F708E2247938522E178DABF2C8701C2CB8AF88; _ga_ZBQMHFHTL8=GS1.1.1672945527.500.1.1672945748.0.0.0; ConsultarProjeto.Numero=B-1072632',
         'usuarioid': 'e092ed10-dfdd-437c-9fe0-ab6bf9725410'
     }
     for i in obras_concluidas_sem_pasta_no_fechamento:
@@ -124,7 +124,6 @@ def atualiza_asbuilt():
         try:
             status_pasta = resposta['Content']['EnvioPastaStatus']
             if status_pasta == "PASTA PENDENTE DE ENVIO" or status_pasta == "OBRA EM EXECUÇÃO":
-                print(i)
                 try:
                     vl_projeto = resposta['Content']['VlProjeto']
                 except:
@@ -139,8 +138,8 @@ def atualiza_asbuilt():
                     data_energ = data_energ.strftime("%d/%m/%y")
                 except:
                     data_energ = ''
-                
-                unidade = obras_concluidas_completo.loc[obras_concluidas_completo['PROJETO'] == str(i)]['UTD'].values
+
+                unidade = obras_concluidas_completo.loc[obras_concluidas_completo['PROJETO'] == str(i)]['UNIDADE'].values
                 if unidade.size > 0:
                     unidade = unidade[-1]
                 else:
@@ -159,16 +158,17 @@ def atualiza_asbuilt():
                     municipio = municipio[-1]
                 else:
                     municipio = ''
-
+                
                 projetos_pendente_asbuilt.append([unidade, i, titulo, vl_projeto, data_energ, supervisor, municipio])
         except:
             print('sem acesso ao projeto ', i)
 
-    planilha_michelle = read_sheets('1WyjUGW3IP_or21BDUmi8QSf_Moa8RG53CgOyT5L_0OU','PENDENTE AS BUILT!A:F', 'FORMATTED_VALUE')
+
+
+    planilha_michelle = read_sheets('1WyjUGW3IP_or21BDUmi8QSf_Moa8RG53CgOyT5L_0OU','PENDENTE AS BUILT!A:E', 'FORMATTED_VALUE')
     df_pendencias = pd.DataFrame(planilha_michelle, columns = planilha_michelle.pop(0))
     projetos = df_pendencias['PROJETO']
     for i in projetos:
-        print(i)
         resposta = requests.post(url, headers=header, json = {'id': i}).json()
         try:
             vl_projeto = resposta['Content']['VlProjeto']
