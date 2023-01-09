@@ -77,8 +77,8 @@ def coleta_infos(cod_contrato, planilha):
     dia = datetime.now()
     dia = dia.strftime("%d/%m/%Y")
     data = {
-        "data_inicial": str(dia),
-        "data_final": str(dia),
+        "data_inicial": '08/01/2023',#str(dia),
+        "data_final": '08/01/2023',#str(dia),
         "submit": "Pesquisar",
         "contrato": cod_contrato,
         "h_tot": "999",
@@ -102,19 +102,22 @@ def coleta_infos(cod_contrato, planilha):
 
     agora = datetime.now()
     oito_e_dez = agora.replace(hour=8, minute=10, second=0, microsecond=0)
-    for i in linhas:
-        colunas = i.findAll('td')
-        if colunas[3].text in turnos_registrados.values:
-            continue
-        else:
-            hora_abertura = datetime.strptime(colunas[12].text, '%d/%m/%Y %H:%M:%S')
-            if hora_abertura > oito_e_dez:
-                pontualidade = 0
-            elif hora_abertura < oito_e_dez:
-                pontualidade = 1
+    try:
+        for i in linhas:
+            colunas = i.findAll('td')
+            if colunas[3].text in turnos_registrados.values:
+                continue
+            else:
+                hora_abertura = datetime.strptime(colunas[12].text, '%d/%m/%Y %H:%M:%S')
+                if hora_abertura > oito_e_dez:
+                    pontualidade = 0
+                elif hora_abertura < oito_e_dez:
+                    pontualidade = 1
 
-            resposta = possui_camera(colunas[3].text, cookie)
-            planilha.append([colunas[3].text, colunas[7].text, colunas[12].text, pontualidade, resposta, colunas[11].text])
+                resposta = possui_camera(colunas[3].text, cookie)
+                planilha.append([colunas[3].text, colunas[7].text, colunas[12].text, pontualidade, resposta, colunas[11].text])
+    except:
+        print('Nenhum turno encontratdo')
 
 def atualiza_turno():
     
