@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
 
-global planilha
-planilha = []
-
 def busca_n_checklist(cod_turno, cookie):
     url = "https://sirtecba.gpm.srv.br/gpm/geral/relatorio_turno.php"
     headers = {
@@ -77,15 +74,14 @@ def coleta_infos(cod_contrato, planilha):
     dia = datetime.now()
     dia = dia.strftime("%d/%m/%Y")
     data = {
-        "data_inicial": '08/01/2023',#str(dia),
-        "data_final": '08/01/2023',#str(dia),
+        "data_inicial": str(dia),
+        "data_final": str(dia),
         "submit": "Pesquisar",
         "contrato": cod_contrato,
         "h_tot": "999",
         "avancaTodos": "Todas",
     }
 
-    #Busca turnos do contrato final 70
     try:
         response = requests.post(url, headers=headers, data=data) 
         conteudo = response.content
@@ -120,7 +116,9 @@ def coleta_infos(cod_contrato, planilha):
         print('Nenhum turno encontratdo')
 
 def atualiza_turno():
-    
+    global planilha
+    planilha = []
+
     coleta_infos("12", planilha)
     coleta_infos("11", planilha)
     coleta_infos("16", planilha)
