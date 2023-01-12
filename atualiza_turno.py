@@ -64,7 +64,7 @@ def possui_camera(cod_turno, cookie):
 def coleta_infos(cod_contrato, planilha):
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     abertura_turnos = pd.read_sql_table('abertura_turnos', con=engine)
-    cookie = "PHPSESSID=q9651jqnpkh1sabiuov01bdqh2;"
+    cookie = "PHPSESSID=a5jdj2m0r359a5n4ab22v3gr73;"
     turnos_registrados = abertura_turnos['cod_turno_tur']
     url = "https://sirtecba.gpm.srv.br/gpm/geral/consulta_turno.php?tip=C"
     headers = {
