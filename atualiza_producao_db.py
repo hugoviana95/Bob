@@ -126,7 +126,7 @@ def buscaRelatorioServico(codigo_serv, cookie):
     return(lista_atividades)    
 
 def atualiza_producao_db():
-    cookie = 'PHPSESSID=4f4m21p3je9fff2miqm3loc25h'
+    cookie = 'PHPSESSID=f8262q9965s3ab2lo8f46k11mc'
 
     agora = datetime.now()
     dia = agora.date()

@@ -130,7 +130,7 @@ def atualiza_producao():
 
     servicos = read_sheets('1kthDa5_Ed7mfpnye-xpnTzZXkFnBB4veVyxeM9Ti8ds', 'produção!D2:D', 'FORMATTED_VALUE')
     range = len(servicos) + 2
-    cookie = 'PHPSESSID=4f4m21p3je9fff2miqm3loc25h'
+    cookie = 'PHPSESSID=f8262q9965s3ab2lo8f46k11mc'
 
     # BUSCA TODOS OS CÓDIGOS DE SERVIÇOS REALIZADOS
     lista_cod_servicos = []
