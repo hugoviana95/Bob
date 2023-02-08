@@ -70,7 +70,7 @@ print('BOB v4.3\n')
 
 t = []
 t.append(threading.Thread(target = turno, name = 'atualiza_turno', daemon = True))
-t.append(threading.Thread(target = producao, name = 'atualiza_producao', daemon = True))
+# t.append(threading.Thread(target = producao, name = 'atualiza_producao', daemon = True))
 t.append(threading.Thread(target = v5, name = 'atualiza_v5', daemon = True))
 t.append(threading.Thread(target = asbuilt, name = 'atualiza_asbuilt', daemon = True))
 t.append(threading.Thread(target = faturamento, name = 'faturamento', daemon = True))
