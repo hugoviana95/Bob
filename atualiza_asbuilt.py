@@ -123,7 +123,7 @@ def atualiza_asbuilt():
         resposta = requests.post(url, headers=header, json = {'id': i}).json()
         try:
             status_pasta = resposta['Content']['EnvioPastaStatus']
-            if status_pasta == "PASTA PENDENTE DE ENVIO" or status_pasta == "OBRA EM EXECUÇÃO":
+            if status_pasta != "PASTA ACEITA" and status_pasta != "PASTA REJEITADA" and status_pasta != "PASTA ACEITA COM RESTRIÇÃO" and status_pasta != "PASTA REPOSTADA" and status_pasta != "PASTA POSTADA PARA RECEPÇÃO":
                 try:
                     vl_projeto = resposta['Content']['VlProjeto']
                 except:
