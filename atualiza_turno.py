@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 def busca_n_checklist(cod_turno, cookie):
     url = "https://sirtecba.gpm.srv.br/gpm/geral/relatorio_turno.php"
@@ -65,7 +65,7 @@ def coleta_infos(cod_contrato, planilha):
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     abertura_turnos = pd.read_sql_table('abertura_turnos', con=engine)
     #autenticador GPM
-    cookie = "PHPSESSID=3is9mgb0lsojrt1nv6acd0ino6"
+    cookie = "PHPSESSID=oo6uedpj8or7rharfsq6nesctn"
     turnos_registrados = abertura_turnos['cod_turno_tur']
     url = "https://sirtecba.gpm.srv.br/gpm/geral/consulta_turno.php?tip=C"
     headers = {

@@ -164,7 +164,7 @@ def atualiza_asbuilt():
 
 
 
-    planilha_michelle = read_sheets('1WyjUGW3IP_or21BDUmi8QSf_Moa8RG53CgOyT5L_0OU','PENDENTE AS BUILT!A:E', 'FORMATTED_VALUE')
+    planilha_michelle = read_sheets('1WyjUGW3IP_or21BDUmi8QSf_Moa8RG53CgOyT5L_0OU','PENDENTE AS BUILT!A:F', 'FORMATTED_VALUE')
     df_pendencias = pd.DataFrame(planilha_michelle, columns = planilha_michelle.pop(0))
     projetos = df_pendencias['PROJETO']
     for i in projetos:

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 def buscaCodigoServico(contrato, cookie, dta_inicio, dta_fim):
     url = 'https://sirtecba.gpm.srv.br/gpm/geral/consulta_servico.php'
@@ -126,15 +126,15 @@ def buscaRelatorioServico(codigo_serv, cookie):
     return(lista_atividades)    
 
 def atualiza_producao_db():
-    cookie = 'PHPSESSID=3is9mgb0lsojrt1nv6acd0ino6'
+    cookie = 'PHPSESSID=oo6uedpj8or7rharfsq6nesctn'
 
     agora = datetime.now()
     dia = agora.date()
 
     hora = agora.strftime('%H:%M')
     dia_menos_sete = dia - timedelta(7)
-    dta_inicio = dia_menos_sete.strftime("%d/%m/%Y")
-    dta_fim = dia.strftime("%d/%m/%Y")
+    dta_inicio = dia_menos_sete.strftime("%Y-%m-%d")
+    dta_fim = dia.strftime("%Y-%m-%d")
 
     print('[' + hora + '] ', "Atualizando produção no banco de dados...")
 
@@ -155,10 +155,9 @@ def atualiza_producao_db():
     atividades = pd.DataFrame(atividades, columns=['turma', 'obra', 'data', 'n_servico', 'codigo_atividade', 'atividade', 'quantidade', 'valor_unit', 'valor_tot'])
     atividades['data'] = pd.to_datetime(atividades['data'], format='%d/%m/%Y %H:%M:%S')
 
-
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     con = engine.connect()
-    con.execute("DELETE FROM producao_gpm WHERE data between %s and %s", dia_menos_sete.strftime("%Y-%m-%d"), dia.strftime("%Y-%m-%d"))
+    con.execute(text("DELETE FROM producao_gpm WHERE data between '%s' and '%s'" % (dta_inicio, dta_fim)))
     atividades.to_sql('producao_gpm', if_exists='append', index=False, con=con)
     con.close()
 
