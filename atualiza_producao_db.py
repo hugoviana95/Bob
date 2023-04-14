@@ -131,12 +131,11 @@ def atualiza_producao_db():
     agora = datetime.now()
     dia = agora.date()
 
-    hora = agora.strftime('%H:%M')
     dia_menos_sete = dia - timedelta(7)
     dta_inicio = dia_menos_sete.strftime("%Y-%m-%d")
     dta_fim = dia.strftime("%Y-%m-%d")
 
-    print('[' + hora + '] ', "Atualizando produção no banco de dados...")
+    print('[' + datetime.now().strftime("%H:%M") + '] Atualizando produção no banco de dados...')
 
     # BUSCA TODOS OS CÓDIGOS DE SERVIÇOS REALIZADOS
     lista_cod_servicos = []
@@ -163,7 +162,7 @@ def atualiza_producao_db():
     con.close()
 
     agora = datetime.now()
-    print(agora.strftime('%H:%M'), 'Producão GPM atualizada no DB')
+    print('[' + datetime.now().strftime("%H:%M") + '] Producão GPM atualizada no DB')
 
 
 if __name__ == '__main__':
