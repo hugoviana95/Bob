@@ -25,7 +25,7 @@ def atualiza_avanco_gpm(id, producao_gpm):
 
         todos_servicos = producao_gpm.loc[producao_gpm['obra'] == projeto]
 
-        qnt_poste = todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR POSTE')]['quantidade'].sum()
+        qnt_poste = int(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR POSTE')]['quantidade'].sum())
         qnt_cabo_bt = todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR CABO MULTIPLEX')]['quantidade'].sum()
         qnt_cabo_at = todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR CABO AL CAA')]['quantidade'].sum()
 
@@ -48,7 +48,7 @@ def avanco_gpm():
     atualiza_avanco_gpm('1EruOLu5kNzq3Vn7Xj4XmgXBOlXXAFhEdmjBWS-rgvWk', producao_gpm) #JEQUIÉ
     atualiza_avanco_gpm('1gFStrS82U7PRX5gBd9jVvYVdkUDAYNFamNxoFATL2kc', producao_gpm) #IRECÊ
 
-    print('[' + datetime.now().strftime("%H:%M") + '] Atualizando avanço das obras na carteira...')
+    print('[' + datetime.now().strftime("%H:%M") + '] Avanço das obras atualizado na carteira...')
 
 if __name__ == '__main__':
     avanco_gpm()
