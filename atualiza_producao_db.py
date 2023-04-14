@@ -126,7 +126,7 @@ def buscaRelatorioServico(codigo_serv, cookie):
     return(lista_atividades)    
 
 def atualiza_producao_db():
-    cookie = 'PHPSESSID=oo6uedpj8or7rharfsq6nesctn'
+    cookie = 'PHPSESSID=e4lpbsbpdsf26n4eg762qnpp52'
 
     agora = datetime.now()
     dia = agora.date()
@@ -158,6 +158,7 @@ def atualiza_producao_db():
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     con = engine.connect()
     con.execute(text("DELETE FROM producao_gpm WHERE data between '%s' and '%s'" % (dta_inicio, dta_fim)))
+    con.commit()
     atividades.to_sql('producao_gpm', if_exists='append', index=False, con=con)
     con.close()
 

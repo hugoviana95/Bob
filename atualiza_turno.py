@@ -65,7 +65,7 @@ def coleta_infos(cod_contrato, planilha):
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     abertura_turnos = pd.read_sql_table('abertura_turnos', con=engine)
     #autenticador GPM
-    cookie = "PHPSESSID=oo6uedpj8or7rharfsq6nesctn"
+    cookie = "PHPSESSID=e4lpbsbpdsf26n4eg762qnpp52"
     turnos_registrados = abertura_turnos['cod_turno_tur']
     url = "https://sirtecba.gpm.srv.br/gpm/geral/consulta_turno.php?tip=C"
     headers = {
@@ -117,6 +117,8 @@ def coleta_infos(cod_contrato, planilha):
         print('Nenhum turno encontratdo')
 
 def atualiza_turno():
+    print('[' + datetime.now().strftime("%H:%M") + '] Atualizando abertura de turnos...')
+
     global planilha
     planilha = []
 

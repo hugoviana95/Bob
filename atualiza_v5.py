@@ -1,22 +1,7 @@
-
-from copy import error
 import requests
 import pandas as pd
-from read_sheets import read_sheets
-from write_sheets import write_sheets
 from datetime import datetime
-
-def consulta_v5(aba):
-    #Consulta os números de projeto da V5 da aba indicada
-    try:
-        range = (aba + '!A:AX')
-        id = '1OGcmrWmbZs0ouApHKaVfYEJEhzfEfBIa7eMezkLvk84'
-        result = read_sheets(id, range, 'FORMATTED_VALUE')
-        v5 = pd.DataFrame(result, columns = result.pop(0))
-        return(v5)
-    except error:
-        print('Ocorreu algum erro ao ler a V5.')
-        return
+import gspread
 
 def consulta_geoex(projeto):
     url = 'https://geoex.com.br/EPS/ConsultarProjeto/Item'
@@ -44,8 +29,6 @@ def consulta_geoex(projeto):
             status_pasta = resposta['Content']['EnvioPastaStatus']
         else:
             status_pasta = ''
-        #print(status_pasta)
-
 
         url = 'https://geoex.com.br/ConsultarProjeto/TermoGeo/Itens'
         body = {
@@ -61,8 +44,6 @@ def consulta_geoex(projeto):
         else:
             auxiliar_hektor = ''
         
-
-        
         return status_estagio_hektor, auxiliar_hektor, status_pasta
     else:
         print('Não foi possível acessar o projeto', projeto, 'no Geoex.')
@@ -72,21 +53,20 @@ def consulta_geoex(projeto):
     return status_estagio_hektor, auxiliar_hektor, status_pasta
 
 
-def atualiza_cada_aba(aba, carteira):
-    id = '1OGcmrWmbZs0ouApHKaVfYEJEhzfEfBIa7eMezkLvk84'
-    v5 = consulta_v5(aba)
+def atualiza_cada_aba(aba):
+    gs = gspread.service_account(filename='service_account.json')
+    sh = gs.open_by_key('1OGcmrWmbZs0ouApHKaVfYEJEhzfEfBIa7eMezkLvk84')
+    v5 = sh.worksheet(aba).get_all_values()
+    v5 = pd.DataFrame(v5, columns=v5.pop(0))
     projetos = v5['PROJETO']
     status_estagio_hektor = []
     auxiliar_hektor = []
     status_pasta = []
-    linha = 2
     for i in projetos:
-        # print(i)
         if i != None and i != '':
             ############################### ATUALIZA STATUS HECKTOR
             status = consulta_geoex(i)
             if status != 'erro':
-                #print(status)
                 status_estagio_hektor.append([status[0]])
                 auxiliar_hektor.append([status[1]])
                 status_pasta.append([status[2]])
@@ -95,81 +75,38 @@ def atualiza_cada_aba(aba, carteira):
                 auxiliar_hektor.append([''])
                 status_pasta.append([''])
             
-        
-            ############################### ATUALIZA AR
-            # if v5.loc[v5['PROJETO'] == i]['AR COELBA'].values == ['']:
-            #     info_obra = carteira.loc[carteira['OBRA'] == i]
-            #     if len(info_obra) > 1:
-            #         ar = info_obra.loc[info_obra['CARTEIRA'] == 'MAIO']['AR'].values
-            #         if ar.size == 0:
-            #             ar = info_obra.loc[info_obra['CARTEIRA'] == 'ABRIL']['AR'].values
-            #             if ar.size == 0:
-            #                 ar = info_obra.loc[info_obra['CARTEIRA'] == 'MARÇO']['AR'].values
-            #                 if ar.size == 0:
-            #                     ar = info_obra.loc[info_obra['CARTEIRA'] == 'FEVEREIRO']['AR'].values
-            #                     if ar.size == 0:
-            #                         ar = info_obra.loc[info_obra['CARTEIRA'] == 'JANEIRO']['AR'].values
-            #         write_sheets(id, aba + '!AS' + str(linha), [ar.tolist()])
-            #     elif len(info_obra) == 1:
-            #         ar = info_obra['AR'].values.tolist()
-            #         write_sheets(id, aba + '!AS' + str(linha), [ar])
-
-        linha += 1
-
-    write_sheets(id, aba + '!AP2', status_estagio_hektor)
-    write_sheets(id, aba + '!AY2', auxiliar_hektor)
-    write_sheets(id, aba + '!K2', status_pasta)
+    sh.worksheet(aba).update('AP2:AP', status_estagio_hektor)
+    sh.worksheet(aba).update('AY2:AY', auxiliar_hektor)
+    sh.worksheet(aba).update('K2:K', status_pasta)
 
 
 
 def atualiza_v5():
+    print('[' + datetime.now().strftime("%H:%M") + ']', 'Atualizando a V5...')
 
-    carteira_vtc = read_sheets('1ffjjOM5iTu6JmOuqcM_rHNIvgL3N0wsLRzPbVJ5St0M', 'Carteira Geral!A:W', 'FORMATTED_VALUE')
-    carteira_vtc = pd.DataFrame(carteira_vtc, columns = carteira_vtc.pop(0))
-    carteira_vtc = carteira_vtc.query("PROJETO != ''")
-
-    carteira_jeq = read_sheets('1FaoZZfOJe1ipGFCcd1TjTkW1gaFFiFHbYkEYrR2ILcw', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
-    carteira_jeq = pd.DataFrame(carteira_jeq, columns = carteira_jeq.pop(0))
-    carteira_jeq = carteira_jeq.query("PROJETO != ''")
-
-    carteira_gbi = read_sheets('1frwOdWK89EKyAKgNIcxvA457NeeGbBQoWKOCaVdC9zE', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
-    carteira_gbi = pd.DataFrame(carteira_gbi, columns = carteira_gbi.pop(0))
-    carteira_gbi = carteira_gbi.query("PROJETO != ''")
-
-    carteira_bjl = read_sheets('1o8JAPPUqPF5rVH66XVtwkzjfLZGGA2QecyXAQ1lohpQ', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
-    carteira_bjl = pd.DataFrame(carteira_bjl, columns = carteira_bjl.pop(0))
-    carteira_bjl = carteira_bjl.query("PROJETO != ''")
-
-    carteira_brr = read_sheets('1HodsFNkVEy8PGpMDvqxwGod182LmiEZFuP8HwBBGCus', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
-    carteira_brr = pd.DataFrame(carteira_brr, columns = carteira_brr.pop(0))
-    carteira_brr = carteira_brr.query("PROJETO != ''")
-
-    carteira_ire = read_sheets('1q9k3TB_vi1IcIvg5FD4Crpe6teqbHvDx1sIEszzAA1U', 'Acomp. Carteira!A:W', 'FORMATTED_VALUE')
-    carteira_ire = pd.DataFrame(carteira_ire, columns = carteira_ire.pop(0))
-    carteira_ire = carteira_ire.query("PROJETO != ''")
-
-    carteira_geral = pd.concat([carteira_ire, carteira_vtc, carteira_jeq, carteira_brr, carteira_bjl, carteira_gbi], ignore_index = True)
-
-
-
-    agora = datetime.now().strftime('%H:%M')
-    print('[' + agora + ']', 'Atualizando a V5...')
     print('Atualizando Conquista...')
-    atualiza_cada_aba('OBRAS CONQUISTA', carteira_geral)
+    atualiza_cada_aba('OBRAS CONQUISTA')
+
     print('Atualizando Jequié...')
-    atualiza_cada_aba('OBRAS JEQUIE', carteira_geral)
+    atualiza_cada_aba('OBRAS JEQUIE')
+
     print('Atualizando Irecê...')
-    atualiza_cada_aba('OBRAS IRECE', carteira_geral)
+    atualiza_cada_aba('OBRAS IRECE')
+
     print('Atualizando Lapa...')
-    atualiza_cada_aba('OBRAS LAPA', carteira_geral)
+    atualiza_cada_aba('OBRAS LAPA')
+
     print('Atualizando Guanambi...')
-    atualiza_cada_aba('OBRAS GUANAMBI', carteira_geral)
+    atualiza_cada_aba('OBRAS GUANAMBI')
+
     print('Atualizando Barreiras...')
-    atualiza_cada_aba('OBRAS BARREIRAS', carteira_geral)
+    atualiza_cada_aba('OBRAS BARREIRAS')
+
     print('Atualizando Ibotirama...')
-    atualiza_cada_aba('OBRAS IBOTIRAMA', carteira_geral)
+    atualiza_cada_aba('OBRAS IBOTIRAMA')
+
     agora = datetime.now().strftime('%H:%M')
-    print('['+ agora + "] V5 atualizada!")
+    print('['+ datetime.now().strftime("%H:%M") + "] V5 atualizada!")
 
 
 if __name__ == '__main__':
