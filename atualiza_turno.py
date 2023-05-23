@@ -65,7 +65,7 @@ def coleta_infos(cod_contrato, planilha):
     engine = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
     abertura_turnos = pd.read_sql_table('abertura_turnos', con=engine)
     #autenticador GPM
-    cookie = "PHPSESSID=rscnjbbagtnu5q5u59b2vh9i60"
+    cookie = "PHPSESSID=5mga9jsmagm6srp4piul7ufpe3"
     turnos_registrados = abertura_turnos['cod_turno_tur']
     url = "https://sirtecba.gpm.srv.br/gpm/geral/consulta_turno.php?tip=C"
     headers = {
@@ -84,13 +84,13 @@ def coleta_infos(cod_contrato, planilha):
     }
 
     try:
-        response = requests.post(url, headers=headers, data=data) 
+        response = requests.post(url, headers=headers, data=data)
         conteudo = response.content
         site = BeautifulSoup(conteudo, "html.parser") #Captura o html da página
     except:
         print('Não foi possível fazer conexão com o GPM.')
     try:    
-        tabela = site.find('table', attrs = {"class": "tbl_100_c_5p_0h_lin zebra"})
+        tabela = site.find('table', attrs = {"id": "tab_resultados"})
         linhas = tabela.findAll('tr')
         linhas.pop(0)
     except:

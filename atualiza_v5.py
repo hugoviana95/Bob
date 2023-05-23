@@ -4,16 +4,18 @@ from datetime import datetime
 import gspread
 
 def consulta_geoex(projeto):
-    url = 'https://geoex.com.br/EPS/ConsultarProjeto/Item'
+    url = 'https://geoex.com.br/api/EPS/ConsultarProjeto/Item'
     header = {
-        'cookie': '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; ASP.NET_SessionId=okg3jb253fykgd13kxtodv0x; _ga_ZBQMHFHTL8=GS1.1.1679395496.2.0.1679395496.0.0.0; .ASPXAUTH=9CCD03C8D413CAFDA79DBE2A6C5AB2FC9052F77CE232866B7A82B6D6AAA808C074E756774B4E08B0826CA747019AD9C319711153931228848B8CF7E36DEEAF1A49192FD96B6836E7B7CCBD1DFA567C9AD0AD3BF42A8B17244F92C32CCF574723FD1116917CF5E38D1AEBC137C1039C0B72C825AE6456B13653B08CA682BB84CC03ECFD66CE8400131080898D89BFFD4840856E2683B712B83486D9CBE89B26E54E8298EEACFC17FE69B826E3014217E8881E1969791D30768928995B40BF8FCC17CEE6F78EE90CAA035572591E613DDD; Home.Buscar.Texto='
+        'cookie': '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; ConsultarNota.Numero=9101900448; ASP.NET_SessionId=z1sozdj0fdp3ar2migybc5eq; ConsultarProjeto.Numero=B-0957112; _ga_ZBQMHFHTL8=GS1.1.1683121115.101.0.1683121538.0.0.0; .ASPXAUTH=314ECA4861344A51E9F9BAAF4656B837F1F0377AB43E9F94451A5FF3ADB0641FBFBF6BC6BA1DAAD93A2D933CA0DEA25A284CB2AF75B9DD7C38DD2A2F8410033EF1D8C96568F7D0D594407193A9B23C2DAC34081C9DF37085EB46CF011749D5D912B93BE1798EAA447A89DE77C9D66DFC2C507DDDF739FB8BF9B4E234039DFE65B41E53BB7B9E26EDDAD51319C9D083B4C8F75D577666B2B384A9CCFCC6F6EE4F3F4A7AE57EAC33D207BEE705587083430485709B84D62DFA0745B730644FC2385B029635CE08C06FD0166E3B65905C52',
+        'ususarioid': 'e092ed10-dfdd-437c-9fe0-ab6bf9725410'
     }
     body = {
         'id': projeto
     }
  
     try:
-        resposta = requests.post(url = url, json = body, headers = header).json()
+        resposta = requests.post(url = url, json = body, headers = header)
+        resposta = resposta.json()
     except:
         print('Não foi possível acessar a página do Geoex.')
         return('erro')
@@ -30,7 +32,7 @@ def consulta_geoex(projeto):
         else:
             status_pasta = ''
 
-        url = 'https://geoex.com.br/ConsultarProjeto/TermoGeo/Itens'
+        url = 'https://geoex.com.br/api/ConsultarProjeto/TermoGeo/Itens'
         body = {
             'ProjetoId': id_projeto,
             'Paginacao': {
