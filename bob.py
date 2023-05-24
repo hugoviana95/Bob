@@ -26,8 +26,8 @@ class Bob:
 
         # Autenticadores
         self.cookie_gpm = 'PHPSESSID=vlqurivde0870s9cbr110vg2t1'
-        self.cookie_geoex = '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; ConsultarNota.Numero=9101900448; ASP.NET_SessionId=z1sozdj0fdp3ar2migybc5eq; ConsultarProjeto.Numero=B-0957112; _ga_ZBQMHFHTL8=GS1.1.1683121115.101.0.1683121538.0.0.0; .ASPXAUTH=314ECA4861344A51E9F9BAAF4656B837F1F0377AB43E9F94451A5FF3ADB0641FBFBF6BC6BA1DAAD93A2D933CA0DEA25A284CB2AF75B9DD7C38DD2A2F8410033EF1D8C96568F7D0D594407193A9B23C2DAC34081C9DF37085EB46CF011749D5D912B93BE1798EAA447A89DE77C9D66DFC2C507DDDF739FB8BF9B4E234039DFE65B41E53BB7B9E26EDDAD51319C9D083B4C8F75D577666B2B384A9CCFCC6F6EE4F3F4A7AE57EAC33D207BEE705587083430485709B84D62DFA0745B730644FC2385B029635CE08C06FD0166E3B65905C52'
-        self.cookie_frotalog = 'FLPreferredLanguage=pt-br; NOMENU=false; JSESSIONID=50089AA22E6C035E454CEA7347051B45; __utmz=123168092.1679403280.1.1.utmcsr=frotalog.com.br|utmccn=(referral)|utmcmd=referral|utmcct=/; _ga=GA1.3.1224477835.1679403280; _gid=GA1.3.2026550395.1682891755; __utmc=123168092; _gat=1; __utma=123168092.1224477835.1679403280.1683333370.1683337304.27; __utmt=1; __utmb=123168092.1.10.1683337304'
+        self.cookie_geoex = '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; ASP.NET_SessionId=ap5armw21a2lgheanbbirmfg; ConsultarNota.Numero=9101925183; .ASPXAUTH=3A6895BD87B1A3B5C6BF1B356A84845F8378879197BD67509430CB6DC0E4622F9C0075117EA9BA1117276F8305D876A69CB14DBEE2900B3D590A578AA8B84A7E53BEE3629C2E2D70B42ECCFCBA5E3799646E12E9BCC52A25FE61CB9F813A531312F4F267F58DBC7F388E19280977AA66D5799503DC7AE6CFB914A1C30BC556D57B309C89C1AF9EFB875CA27C3A64D36EC0745ECDE9E607BBCAB4CD9046509CFCE0F5E367C1C9580E5FB4BE70BDF58958C745AC846A90CF319797AD7B1EB0BA9612EE21599F6A4B4E88755FC49E8B6011; _ga_ZBQMHFHTL8=GS1.1.1684849340.164.0.1684849526.0.0.0;'
+        self.cookie_frotalog = 'JSESSIONID=27DEC65AF00AFF9D44AC838C51DBCA6F'
         self.engine_db = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
         self.gspread_service = gspread.service_account(filename='service_account.json')
         
@@ -484,15 +484,6 @@ class Bob:
             'coord_base_lon': [ -40.870711, -42.805218, -40.100514, -41.850959, -44.973280, -43.215805, -43.368768, -40.2369279]
         })
 
-        # Atualizar cookie
-        url = 'https://www.frotalog.com.br/MBServerO/login.do'
-        data = {
-            'userName': 'hugo.viana',
-            'password': '@Sirtec2023'
-        }
-        r = requests.post(url, data=data).headers
-        self.cookie_frotalog = r['set-cookie']
-
         acompanhamento_diario_equipes = programacao.loc[programacao['Data Execução'] == hoje]
         acompanhamento_diario_equipes = acompanhamento_diario_equipes[['Data Execução', 'Equipe', 'Projeto', 'Etapa', 'Mão de Obra']]
         acompanhamento_diario_equipes = acompanhamento_diario_equipes.merge(carteira[['Projeto', 'MUNICÍPIO', 'UNIDADE', 'LATITUDE', 'LONGITUDE']], on='Projeto', how='left')
@@ -772,6 +763,18 @@ class Bob:
 
 
     def consultar_localizacao_viatura_frotalog(self, placa):
+        # Atualizar cookie
+
+        # url = 'https://www.frotalog.com.br/MBServerO/login.do'
+        # data = {
+        #     'userName': 'hugo.viana',
+        #     'password': '@Sirtec2023'
+        # }
+
+        # r = requests.post(url, data=data)
+        # r = r.headers
+        # self.cookie_frotalog = r['set-cookie']
+
         # df_equipes = pd.read_sql_table('equipes', con=self.engine_db)
         df_equipes = pd.read_excel('placas_veiculos.xlsx')
         df_equipes = df_equipes.dropna(subset=['Id_frotalog'])
@@ -792,7 +795,7 @@ class Bob:
         header={'cookie':self.cookie_frotalog}
 
         r = requests.get(url=url, headers=header)
-        
+
         if r.text != '':
             return {
                 'status': 'Viatura localizada',
