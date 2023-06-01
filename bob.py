@@ -15,6 +15,7 @@ import requests
 import pandas as pd
 import gspread
 import math
+import re
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine, text
@@ -25,9 +26,9 @@ class Bob:
         print('BOB v6.0\n')
 
         # Autenticadores
-        self.cookie_gpm = 'PHPSESSID=vlqurivde0870s9cbr110vg2t1'
+        self.cookie_gpm = 'PHPSESSID=h28udp04nsn1jmlck0imo4vaed'
         self.cookie_geoex = '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; ASP.NET_SessionId=ap5armw21a2lgheanbbirmfg; ConsultarNota.Numero=9101925183; .ASPXAUTH=3A6895BD87B1A3B5C6BF1B356A84845F8378879197BD67509430CB6DC0E4622F9C0075117EA9BA1117276F8305D876A69CB14DBEE2900B3D590A578AA8B84A7E53BEE3629C2E2D70B42ECCFCBA5E3799646E12E9BCC52A25FE61CB9F813A531312F4F267F58DBC7F388E19280977AA66D5799503DC7AE6CFB914A1C30BC556D57B309C89C1AF9EFB875CA27C3A64D36EC0745ECDE9E607BBCAB4CD9046509CFCE0F5E367C1C9580E5FB4BE70BDF58958C745AC846A90CF319797AD7B1EB0BA9612EE21599F6A4B4E88755FC49E8B6011; _ga_ZBQMHFHTL8=GS1.1.1684849340.164.0.1684849526.0.0.0;'
-        self.cookie_frotalog = 'JSESSIONID=27DEC65AF00AFF9D44AC838C51DBCA6F'
+        self.cookie_frotalog = 'JSESSIONID=67AD735C8F718D0B5063185773C251A2'
         self.engine_db = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
         self.gspread_service = gspread.service_account(filename='service_account.json')
         
@@ -64,48 +65,11 @@ class Bob:
     
 
         ####################### LENDO CARTEIRAS ONLINE
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_conquista)
-        carteira_vtc = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_vtc = pd.DataFrame(carteira_vtc, columns = carteira_vtc.pop(0))
-        carteira_vtc = carteira_vtc.query("PROJETO != ''")
-        carteira_vtc = carteira_vtc[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_jequie)
-        carteira_jeq = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_jeq = pd.DataFrame(carteira_jeq, columns = carteira_jeq.pop(0))
-        carteira_jeq = carteira_jeq.query("PROJETO != ''")
-        carteira_jeq = carteira_jeq[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_guanambi)
-        carteira_gbi = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_gbi = pd.DataFrame(carteira_gbi, columns = carteira_gbi.pop(0))
-        carteira_gbi = carteira_gbi.query("PROJETO != ''")
-        carteira_gbi = carteira_gbi[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_lapa)
-        carteira_bjl = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_bjl = pd.DataFrame(carteira_bjl, columns = carteira_bjl.pop(0))
-        carteira_bjl = carteira_bjl.query("PROJETO != ''")
-        carteira_bjl = carteira_bjl[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_barreiras)
-        carteira_brr = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_brr = pd.DataFrame(carteira_brr, columns = carteira_brr.pop(0))
-        carteira_brr = carteira_brr.query("PROJETO != ''")
-        carteira_brr = carteira_brr[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_irece)
-        carteira_ire = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_ire = pd.DataFrame(carteira_ire, columns = carteira_ire.pop(0))
-        carteira_ire = carteira_ire.query("PROJETO != ''")
-        carteira_ire = carteira_ire[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-
-        sh = self.gspread_service.open_by_key(self.id_planilha_planejamento_ibotirama)
-        carteira_ibt = sh.worksheet("CARTEIRA").get_all_values()
-        carteira_ibt = pd.DataFrame(carteira_ibt, columns = carteira_ibt.pop(0))
-        carteira_ibt = carteira_ibt.query("PROJETO != ''")
-        carteira_ibt = carteira_ibt[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
-        carteira_geral = pd.concat([carteira_ire, carteira_vtc, carteira_jeq, carteira_brr, carteira_bjl, carteira_gbi, carteira_ibt], ignore_index = True)
+        sh = self.gspread_service.open_by_key(self.id_planilha_carteira)
+        carteira_geral = sh.worksheet("CARTEIRA").get_all_values()
+        carteira_geral = pd.DataFrame(carteira_geral, columns = carteira_geral.pop(0))
+        carteira_geral = carteira_geral.query("PROJETO != ''")
+        carteira_geral = carteira_geral[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
 
 
         ####################### PROCURA POR OBRAS CONCLUÍDAS NAS CARTEIRAS
@@ -278,26 +242,50 @@ class Bob:
         """
 
         while True:
-            if unidade == 'conquista':
+            if unidade == 'conquista_1':
                 id = self.id_planilha_planejamento_conquista
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA_VTC_1")
+                break
+            if unidade == 'conquista_2':
+                id = self.id_planilha_planejamento_conquista
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA_VTC_2")
+                break
+            if unidade == 'itapetinga':
+                id = self.id_planilha_planejamento_conquista
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA_ITAPETINGA")
                 break
             elif unidade == 'barreiras':
                 id = self.id_planilha_planejamento_barreiras
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA")
                 break
             elif unidade == 'lapa':
                 id = self.id_planilha_planejamento_lapa
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA")
                 break
             elif unidade == 'ibotirama':
                 id = self.id_planilha_planejamento_ibotirama
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA")
                 break
             elif unidade == 'jequié':
                 id = self.id_planilha_planejamento_jequie
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA")
                 break
             elif unidade == 'irecê':
                 id = self.id_planilha_planejamento_irece
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA")
                 break
             elif unidade == 'guanambi':
                 id = self.id_planilha_planejamento_guanambi
+                sh = self.gspread_service.open_by_key(id)
+                ws = sh.worksheet("CARTEIRA")
                 break
             else:
                 unidade = input(f'Selecionar uma das unidades abaixo:\n{self.unidades}')
@@ -306,9 +294,10 @@ class Bob:
         print(f'[{datetime.now().strftime("%H:%M")}] Atualizando avanço das obras na carteira de {unidade}...')
 
         producao_gpm = pd.read_sql_table('producao_gpm', self.engine_db)
+        producao_gpm['obra'] = producao_gpm['obra'].str.extract(r'(\d{7})')
+        producao_gpm.dropna(subset=['obra'], inplace=True)
+        producao_gpm['obra'].astype(int)
 
-        sh = self.gspread_service.open_by_key(id)
-        ws = sh.worksheet("CARTEIRA")
         projetos = ws.col_values(3)
         projetos.pop(0)
 
@@ -316,17 +305,17 @@ class Bob:
         info_avanco_cava = []
 
         for i in projetos:
-            if len(i) == 7:
-                projeto = "B-"+i
-            elif len(i) == 6:
-                projeto = "B-0"+i
-            elif len(i) == 5:
-                projeto = "B-00"+i
-            else:
-                info_avanco.append(['', '', ''])
-                continue
+            # if len(i) == 7:
+            #     projeto = "B-"+i
+            # elif len(i) == 6:
+            #     projeto = "B-0"+i
+            # elif len(i) == 5:
+            #     projeto = "B-00"+i
+            # else:
+            #     info_avanco.append(['', '', ''])
+            #     continue
 
-            todos_servicos = producao_gpm.loc[producao_gpm['obra'] == projeto]
+            todos_servicos = producao_gpm.loc[producao_gpm['obra'] == i]
 
             qnt_cava = int(todos_servicos[todos_servicos['atividade'].str.contains('CAVA NORMAL EM SOLO COMUM')]['quantidade'].sum())
             qnt_poste = int(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR POSTE')]['quantidade'].sum())
@@ -485,7 +474,7 @@ class Bob:
         })
 
         acompanhamento_diario_equipes = programacao.loc[programacao['Data Execução'] == hoje]
-        acompanhamento_diario_equipes = acompanhamento_diario_equipes[['Data Execução', 'Equipe', 'Projeto', 'Etapa', 'Mão de Obra']]
+        acompanhamento_diario_equipes = acompanhamento_diario_equipes[['Data Execução', 'Equipe', 'Projeto', 'Etapa', 'Supervisor', 'Mão de Obra']]
         acompanhamento_diario_equipes = acompanhamento_diario_equipes.merge(carteira[['Projeto', 'MUNICÍPIO', 'UNIDADE', 'LATITUDE', 'LONGITUDE']], on='Projeto', how='left')
         acompanhamento_diario_equipes = acompanhamento_diario_equipes.merge(turnos_abertos[['cod_turno_tur', 'Equipe', 'dta_solicitacao', 'placa']], on='Equipe', how='left')
         acompanhamento_diario_equipes = acompanhamento_diario_equipes.rename(columns = {'cod_turno_tur': 'Turno', 'placa': 'Placa'})
@@ -594,7 +583,8 @@ class Bob:
             'LONGITUDE': 'localizacao_obra_prog_lon',
             'Etapa': 'etapa_obra',
             'Projeto': 'obra_programada',
-            'MUNICÍPIO': 'municipio'
+            'MUNICÍPIO': 'municipio',
+            'Supervisor': 'supervisor',
         })
 
         data_hora_atualizacao = datetime.strftime(datetime.now(), format='%Y-%m-%d %H:%M:%S')
@@ -698,8 +688,11 @@ class Bob:
 
         coluna = linhas[14].findAll('td') # REGISTRA O NÚMERO DA OBRA
         obra = coluna[1].text
-        if obra[0] == 'B':
-            obra = obra[0:9]
+        # if obra[0] == 'B':
+            # obra = obra[0:9]
+        obra = re.search(r'\d{7}', obra)
+        if obra:
+            obra = int(obra.group(0))
 
         coluna = linhas[22].findAll('td') # REGISTRA OBSERVAÇÃO CENTRAL
         obs_central = coluna[1].text
@@ -762,18 +755,22 @@ class Bob:
         return(dados_servico)    
 
 
-    def consultar_localizacao_viatura_frotalog(self, placa):
+    def atualiza_cookie_frotalog(self):
         # Atualizar cookie
 
-        # url = 'https://www.frotalog.com.br/MBServerO/login.do'
-        # data = {
-        #     'userName': 'hugo.viana',
-        #     'password': '@Sirtec2023'
-        # }
+        url = 'https://www.frotalog.com.br/MBServerO/sessionControl.do'
+        data = {
+            'dispatch': 'handleSessions',
+            'userName': 'hugo.viana',
+            'password': '@Sirtec2023',
+        }
 
-        # r = requests.post(url, data=data)
-        # r = r.headers
-        # self.cookie_frotalog = r['set-cookie']
+        r = requests.post(url, data=data)
+        r = r.headers
+        self.cookie_frotalog = r['set-cookie']
+
+    def consultar_localizacao_viatura_frotalog(self, placa):
+        self.atualiza_cookie_frotalog()
 
         # df_equipes = pd.read_sql_table('equipes', con=self.engine_db)
         df_equipes = pd.read_excel('placas_veiculos.xlsx')
@@ -791,19 +788,27 @@ class Bob:
         precision = '30'
 
         url = f'https://www.frotalog.com.br/MBServerO/routeRebuildServlet?srv={srv}&vehicleId={vehiclieId}&startDate={startDate}&endDate={endDate}&precision={precision}'
-
         header={'cookie':self.cookie_frotalog}
 
         r = requests.get(url=url, headers=header)
 
-        if r.text != '':
+        if r.text == '': # Se não houver retorno da API, atualiza o cookie e tenta novamente
+            self.atualiza_cookie_frotalog()
+            header={'cookie':self.cookie_frotalog}
+            r = requests.get(url=url, headers=header)
+            if r.text != '':
+                return {
+                    'status': 'Viatura localizada',
+                    'info': r.json()
+                }
+            else:
+                return {
+                    'status': 'Viatura não localizada'
+                }
+        else:
             return {
                 'status': 'Viatura localizada',
                 'info': r.json()
-            }
-        else:
-            return {
-                'status': 'Viatura não localizada'
             }
 
     
@@ -811,7 +816,7 @@ class Bob:
         """
         Consulta localização das equipes por contrato
 
-        Retorno em DataFram
+        Retorno em formato de DataFrame Pandas
 
         12 = Contrato Oeste
         11 = Contrato Sudoeste
