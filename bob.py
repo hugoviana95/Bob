@@ -26,7 +26,7 @@ class Bob:
         print('BOB v6.0\n')
 
         # Autenticadores
-        self.cookie_gpm = 'PHPSESSID=h28udp04nsn1jmlck0imo4vaed'
+        self.cookie_gpm = 'PHPSESSID=g7bjau9m37crur90h2951ps8gq'
         self.cookie_geoex = '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; ASP.NET_SessionId=ap5armw21a2lgheanbbirmfg; ConsultarNota.Numero=9101925183; .ASPXAUTH=3A6895BD87B1A3B5C6BF1B356A84845F8378879197BD67509430CB6DC0E4622F9C0075117EA9BA1117276F8305D876A69CB14DBEE2900B3D590A578AA8B84A7E53BEE3629C2E2D70B42ECCFCBA5E3799646E12E9BCC52A25FE61CB9F813A531312F4F267F58DBC7F388E19280977AA66D5799503DC7AE6CFB914A1C30BC556D57B309C89C1AF9EFB875CA27C3A64D36EC0745ECDE9E607BBCAB4CD9046509CFCE0F5E367C1C9580E5FB4BE70BDF58958C745AC846A90CF319797AD7B1EB0BA9612EE21599F6A4B4E88755FC49E8B6011; _ga_ZBQMHFHTL8=GS1.1.1684849340.164.0.1684849526.0.0.0;'
         self.cookie_frotalog = 'JSESSIONID=67AD735C8F718D0B5063185773C251A2'
         self.engine_db = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
@@ -70,12 +70,19 @@ class Bob:
         carteira_geral = pd.DataFrame(carteira_geral, columns = carteira_geral.pop(0))
         carteira_geral = carteira_geral.query("PROJETO != ''")
         carteira_geral = carteira_geral[['CARTEIRA', 'PROJETO', 'STATUS GERAL', 'UNIDADE', 'SUPERVISOR', 'MUNICÍPIO']]
+        # print(carteira_geral)
 
 
         ####################### PROCURA POR OBRAS CONCLUÍDAS NAS CARTEIRAS
         obras_concluidas_completo = carteira_geral.query("`STATUS GERAL` == 'CONCLUÍDA'")
-        # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] == '01/04/2023']
-        obras_concluidas = obras_concluidas_completo['PROJETO']
+        # print(obras_concluidas_completo)
+        # print(obras_concluidas_completo.info())
+        obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/01/2023']
+        obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/02/2023']
+        obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/03/2023']
+        # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/04/2023']
+        # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/05/2023']
+        obras_concluidas = pd.unique(obras_concluidas_completo['PROJETO'])
         obras_concluidas = obras_concluidas.astype(int)
 
 
@@ -127,6 +134,7 @@ class Bob:
         cont = 0
         for i in obras_recepcionadas_geral:
             if ((i != None) and (i != '')):
+                # print(i)
                 obras_recepcionadas_geral[cont] = int(i[2:9])
             cont += 1
 
@@ -224,13 +232,13 @@ class Bob:
             supervisor = supervisor[-1]
 
             projetos_pendente_asbuilt.append([unidade, i, titulo, vl_projeto, data_energ, supervisor])
-
-        sh = self.gspread_service.open_by_key('18-AoLupeaUIOdkW89o6SLK6Z9d8X0dKXgdjft_daMBk')
+            
+        sh = self.gspread_service.open_by_key('1GQ5pLG2DddGrEuRJILe-3g_Rwzhg-82EkVFZnX1_we4')
         pastas_pendentes = sh.worksheet('pastas pendentes')
         
         pastas_pendentes.update([['']*7]*10000)
         pastas_pendentes.update(projetos_pendente_asbuilt)
-        sh.worksheet('Quadro Geral').update('F2', [[datetime.now().strftime("%d/%m/%Y %H:%M")]])
+        sh.worksheet('data atualização').update('A1', [[datetime.now().strftime("%d/%m/%Y %H:%M")]])
 
         print(f'[{ datetime.now().strftime("%H:%M") }] As-builts atualizados!')
 
@@ -383,12 +391,14 @@ class Bob:
                 lista_codigos.append(i.text)
         except:
             pass
-
+        
+        # print('sinal')
 
         # GERA A PLANILHA FINAL DAS ATIVIDADES REALIZADAS
         atividades = []
         if lista_codigos:
             for n_servico in lista_codigos:
+                # print(n_servico)
                 infos_servico = self.consultar_servico_gpm(n_servico)
                 for atividade in infos_servico['atividades']:
                     atividades.append([
