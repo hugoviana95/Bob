@@ -1,12 +1,12 @@
 """
-    88888888ba     ,ad8888ba,    88888888ba   
-    88      "8b   d8"'    `"8b   88      "8b  
-    88      ,8P  d8'        `8b  88      ,8P  
-    88aaaaaa8P'  88          88  88aaaaaa8P'  
-    88""""""8b,  88          88  88""""""8b,  
-    88      `8b  Y8,        ,8P  88      `8b  
-    88      a8P   Y8a.    .a8P   88      a8P  
-    88888888P"     `"Y8888Y"'    88888888P" 
+    88888888ba     ,ad8888ba,    88888888ba
+    88      "8b   d8"'    `"8b   88      "8b
+    88      ,8P  d8'        `8b  88      ,8P
+    88aaaaaa8P'  88          88  88aaaaaa8P'
+    88""""""8b,  88          88  88""""""8b,
+    88      `8b  Y8,        ,8P  88      `8b
+    88      a8P   Y8a.    .a8P   88      a8P
+    88888888P"     `"Y8888Y"'    88888888P"
 """
 
 
@@ -16,6 +16,7 @@ import pandas as pd
 import gspread
 import math
 import re
+import os
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine, text
@@ -25,12 +26,13 @@ class Bob:
     def __init__(self):
         print('BOB v6.0\n')
 
+        self.path = os.path.dirname(os.path.abspath(__file__))
+
         # Autenticadores
-        self.cookie_gpm = 'PHPSESSID=g7bjau9m37crur90h2951ps8gq'
-        self.cookie_geoex = '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; ASP.NET_SessionId=ap5armw21a2lgheanbbirmfg; ConsultarNota.Numero=9101925183; .ASPXAUTH=3A6895BD87B1A3B5C6BF1B356A84845F8378879197BD67509430CB6DC0E4622F9C0075117EA9BA1117276F8305D876A69CB14DBEE2900B3D590A578AA8B84A7E53BEE3629C2E2D70B42ECCFCBA5E3799646E12E9BCC52A25FE61CB9F813A531312F4F267F58DBC7F388E19280977AA66D5799503DC7AE6CFB914A1C30BC556D57B309C89C1AF9EFB875CA27C3A64D36EC0745ECDE9E607BBCAB4CD9046509CFCE0F5E367C1C9580E5FB4BE70BDF58958C745AC846A90CF319797AD7B1EB0BA9612EE21599F6A4B4E88755FC49E8B6011; _ga_ZBQMHFHTL8=GS1.1.1684849340.164.0.1684849526.0.0.0;'
-        self.cookie_frotalog = 'JSESSIONID=67AD735C8F718D0B5063185773C251A2'
+        self.cookie_gpm = 'PHPSESSID=ijjifbg2rrqa5tmlapmc7q9krd'
+        self.cookie_geoex = '_ga=GA1.1.1408546827.1679344756; TemaEscuro=true; Home.Buscar.Texto=; FirmaId=1; ConsultarNota.Numero=9002911253; ASP.NET_SessionId=0gedudd0oohiibktzat1c33x; ConsultarProjeto.Numero=B-1025757; _ga_ZBQMHFHTL8=GS1.1.1695836535.521.1.1695837206.0.0.0; .ASPXAUTH=74083B980C922F3CCE820093478D5F4B488C925C9DA78BF17C3DFC076DF7D4D642AFB7773D68D17DD662DE3CE3784C2AAA97C90A96D62F6935D625776289C2E9F0CEDB412B1D6A7F128A78C063D33DFBECECA64E685881CFE7C9DF1DF7E4C45E0BEFAB345EA069445519CA5E370928A20D6E27B1EF5247327E0743E5014B1DF730B8BD093A0AC614FF8456161BC285D3F18F04A9E98FC57BD872AEEFA71E328EDAFFB7C3C7963A31AFFCB3C8EF50A231C8F8D662DD17605EC87F2E2C2ADD7B29B5EFC9094E764679A8551B65BC8B7259'
         self.engine_db = create_engine("mysql+pymysql://u369946143_pcpBahia:#Energia26#90@31.220.16.3/u369946143_pcpBahia", echo=False)
-        self.gspread_service = gspread.service_account(filename='service_account.json')
+        self.gspread_service = gspread.service_account(filename=os.path.join(self.path, 'service_account.json'))
         
         # Planilhas
         self.id_planilha_fechamento = '1OGcmrWmbZs0ouApHKaVfYEJEhzfEfBIa7eMezkLvk84'
@@ -43,10 +45,12 @@ class Bob:
         self.id_planilha_planejamento_ibotirama = '1Fo2obLTZObf33d2vA_1GbzPzxCU1egJdX9okIF06oDo'
 
         self.id_planilha_programacao = '1ztV6DYCUkhefULyxJTBiaAKLB_x5zAHgK9icFqBDvf4'
-        self.id_planilha_carteira = '1yZUYH8x-LzlA7OqrExA7igqin1PG8h3TWQPt0UUJqxI'
+        self.id_planilha_carteira = '1ztV6DYCUkhefULyxJTBiaAKLB_x5zAHgK9icFqBDvf4'
 
 
         self.unidades = ['conquista', 'guanambi', 'jequié', 'irecê', 'lapa', 'barreiras', 'ibotirama']
+
+
 
 
     """
@@ -80,8 +84,9 @@ class Bob:
         obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/01/2023']
         obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/02/2023']
         obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/03/2023']
-        # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/04/2023']
-        # obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/05/2023']
+        obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/04/2023']
+        obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/05/2023']
+        obras_concluidas_completo = obras_concluidas_completo.loc[obras_concluidas_completo['CARTEIRA'] != '01/06/2023']
         obras_concluidas = pd.unique(obras_concluidas_completo['PROJETO'])
         obras_concluidas = obras_concluidas.astype(int)
 
@@ -153,6 +158,7 @@ class Bob:
             cont += 1
 
         ####################### CONFERE QUAIS OBRAS ESTÃO PENDENTES DE ENVIO DA PASTA NO GEOEX
+        status_aceitos = ['PASTA ACEITA', 'PASTA ACEITA COM RESTRIÇÃO', 'PASTA REJEITADA', 'PASTA REPOSTADA', 'PASTA POSTADA PARA RECEPÇÃO']
         projetos_pendente_asbuilt = [['UNIDADE', 'PROJETO', 'TÍTULO', 'VALOR DO PROJETO', 'DATA DE ENERGIZAÇÃO', 'SUPERVISOR', 'MUNICÍPIO']]
         url = 'https://geoex.com.br/api/EPS/ConsultarProjeto/Item'
         header = {
@@ -160,11 +166,14 @@ class Bob:
             'usuarioid': 'e092ed10-dfdd-437c-9fe0-ab6bf9725410'
         }
         for i in obras_concluidas_sem_pasta_no_fechamento:
+            print(i)
             resposta = requests.post(url, headers=header, json = {'id': str(i)})
+            print(resposta)
             resposta = resposta.json()
             try:
                 status_pasta = resposta['Content']['EnvioPastaStatus']
-                if status_pasta != "PASTA ACEITA" and status_pasta != "PASTA REJEITADA" and status_pasta != "PASTA ACEITA COM RESTRIÇÃO" and status_pasta != "PASTA REPOSTADA" and status_pasta != "PASTA POSTADA PARA RECEPÇÃO":
+                print(status_pasta)
+                if not(status_pasta in status_aceitos):
                     try:
                         vl_projeto = resposta['Content']['VlProjeto']
                     except:
@@ -199,8 +208,9 @@ class Bob:
                         municipio = municipio[-1]
                     else:
                         municipio = ''
-                    
+                    print(i)
                     projetos_pendente_asbuilt.append([unidade, i, titulo, vl_projeto, data_energ, supervisor, municipio])
+                    print(projetos_pendente_asbuilt)
             except:
                 print('sem acesso ao projeto ', i)
 
@@ -302,39 +312,46 @@ class Bob:
         print(f'[{datetime.now().strftime("%H:%M")}] Atualizando avanço das obras na carteira de {unidade}...')
 
         producao_gpm = pd.read_sql_table('producao_gpm', self.engine_db)
-        producao_gpm['obra'] = producao_gpm['obra'].str.extract(r'(\d{7})')
-        producao_gpm.dropna(subset=['obra'], inplace=True)
-        producao_gpm['obra'].astype(int)
+        producao_gpm['obra'] = producao_gpm['obra'].str.extract(r'(\d{1,7})')
+        producao_gpm.dropna(inplace=True, subset=['obra'])
+        producao_gpm['obra'] = producao_gpm['obra'].astype(int)
 
         projetos = ws.col_values(3)
         projetos.pop(0)
 
         info_avanco = []
         info_avanco_cava = []
+        mao_de_obra_lm = []
+        mao_de_obra_lv = []
 
         for i in projetos:
-            # if len(i) == 7:
-            #     projeto = "B-"+i
-            # elif len(i) == 6:
-            #     projeto = "B-0"+i
-            # elif len(i) == 5:
-            #     projeto = "B-00"+i
-            # else:
-            #     info_avanco.append(['', '', ''])
-            #     continue
+            if i:
+                todos_servicos = producao_gpm.loc[producao_gpm['obra'] == int(i)]
 
-            todos_servicos = producao_gpm.loc[producao_gpm['obra'] == i]
+                qnt_cava = int(todos_servicos[todos_servicos['atividade'].str.contains('CAVA NORMAL EM SOLO COMUM')]['quantidade'].sum())
+                qnt_poste = int(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR POSTE')]['quantidade'].sum())
+                qnt_cabo_bt = float(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR CABO MULTIPLEX')]['quantidade'].sum())
+                qnt_cabo_at = float(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR CABO AL CAA')]['quantidade'].sum())
 
-            qnt_cava = int(todos_servicos[todos_servicos['atividade'].str.contains('CAVA NORMAL EM SOLO COMUM')]['quantidade'].sum())
-            qnt_poste = int(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR POSTE')]['quantidade'].sum())
-            qnt_cabo_bt = float(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR CABO MULTIPLEX')]['quantidade'].sum())
-            qnt_cabo_at = float(todos_servicos[todos_servicos['atividade'].str.contains('INSTALAR CABO AL CAA')]['quantidade'].sum())
+                info_avanco.append([qnt_poste, qnt_cabo_at, qnt_cabo_bt])
+                info_avanco_cava.append([qnt_cava])
 
-            info_avanco.append([qnt_poste, qnt_cabo_at, qnt_cabo_bt])
-            info_avanco_cava.append([qnt_cava])
+                lm = float(todos_servicos[todos_servicos['codigo_atividade'].str.contains('SDEM')]['valor_tot'].sum() + todos_servicos[todos_servicos['codigo_atividade'].str.contains('SDMM')]['valor_tot'].sum() + todos_servicos[todos_servicos['codigo_atividade'].str.contains('SIR0')]['valor_tot'].sum())
+                lv = float(todos_servicos[todos_servicos['codigo_atividade'].str.contains('SDEV')]['valor_tot'].sum() + todos_servicos[todos_servicos['codigo_atividade'].str.contains('SDMV')]['valor_tot'].sum())
+                mao_de_obra_lm.append([lm])
+                mao_de_obra_lv.append([lv])
+                # print(i, lm, lv)
+            else:
+                info_avanco.append([0, 0, 0])
+                info_avanco_cava.append([0])
+                mao_de_obra_lm.append([0])
+                mao_de_obra_lv.append([0])
 
-        ws.update('Z2:AB', info_avanco)
-        ws.update('AT2', info_avanco_cava)
+
+        ws.update('AM2:AO', info_avanco)
+        ws.update('AL2', info_avanco_cava)
+        ws.update('X2', mao_de_obra_lm)
+        ws.update('Y2', mao_de_obra_lv)
 
         print(f'[{datetime.now().strftime("%H:%M")}] Avanço das obras na carteira de {unidade} atualizado...')
 
@@ -415,7 +432,8 @@ class Bob:
 
         atividades = pd.DataFrame(atividades, columns=['turma', 'obra', 'data', 'n_servico', 'codigo_atividade', 'atividade', 'quantidade', 'valor_unit', 'valor_tot'])
         atividades['data'] = pd.to_datetime(atividades['data'], format='%d/%m/%Y %H:%M:%S')
-
+        # print(atividades)
+        
         con = self.engine_db.connect()
         try:
             con.execute(text(f"DELETE FROM producao_gpm WHERE data between '{data_inicio}' and '{data_fim}'"))
@@ -437,13 +455,110 @@ class Bob:
         print(f'[{datetime.now().strftime("%H:%M")}] Producão GPM atualizada no DB')
 
 
-    def atualizar_v5(self, unidade):
+    def atualizar_gpm_exportacao_dados_obras(
+            self,
+            data_inicio = datetime.strftime(datetime.today() - timedelta(days=30), '%Y-%m-%d'),
+            data_fim = datetime.strftime(datetime.today(), '%Y-%m-%d')
+    ):
+        print(f'[{datetime.now().strftime("%H:%M")}] Atualizando produção GPM no banco de dados...')
+
+        df = self.consultar_gpm_exportacao_dados_obras(data_inicio, data_fim)
+
+        df['qtd_atividade'] = df['qtd_atividade'].str.replace('.','')
+        df['qtd_atividade'] = df['qtd_atividade'].str.replace(',','.').astype(float)
+
+        df['valor_unitario'] = df['valor_unitario'].str.replace('.','')
+        df['valor_unitario'] = df['valor_unitario'].str.replace(',','.').astype(float)
+
+        df['valor_total'] = df['valor_total'].str.replace('.','')
+        df['valor_total'] = df['valor_total'].str.replace(',','.').astype(float)
+
+        df['data_servico'] = pd.to_datetime(df['data_servico'], format='%d/%m/%Y')
+        df['data_deslocamento'] = pd.to_datetime(df['data_deslocamento'], format='%d/%m/%Y %H:%M')
+        df['data_inicio'] = pd.to_datetime(df['data_inicio'], format='%d/%m/%Y %H:%M')
+        df['data_fim'] = pd.to_datetime(df['data_fim'], format='%d/%m/%Y %H:%M')
+        df['abertura_turno'] = pd.to_datetime(df['abertura_turno'], format='%d/%m/%Y %H:%M')
+        df['fechamento_turno'] = pd.to_datetime(df['fechamento_turno'], format='%d/%m/%Y %H:%M')
+
+        # Define novas colunas
+        df['n_projeto'] = df['cod_pep_obra'].str.extract(r'(\d{1,7})')
+        df['n_projeto'].fillna(0, inplace = True)
+        df['n_projeto'] = df['n_projeto'].astype(int)
+
+        df['equipe'] = df['des_equipe']
+        df.loc[df['des_equipe'].str.contains('BAR -'), 'equipe'] = df.loc[df['des_equipe'].str.contains('BAR -'), 'des_equipe'].str.extract(r'(BAR - [A-Z0-9]+)')[0]
+
+        con = self.engine_db.connect()
+        try:
+            con.execute(text(f"DELETE FROM gpm_exportacao_dados_obras WHERE data_servico between '{data_inicio}' and '{data_fim}'"))
+            con.commit()
+            df.to_sql('gpm_exportacao_dados_obras', if_exists='append', index=False, con=con)
+            con.execute(text(f"UPDATE data_hora_atualizacoes SET data_hora_atualizacao = '{datetime.strftime(datetime.now(),format='%Y-%m-%d %H:%M:%S')}' WHERE base_atualizada = 'Lançamentos GPM 2.0'"))
+            con.commit()
+            con.close()
+        except:
+            con.rollback()
+            con.execute(text(f"DELETE FROM gpm_exportacao_dados_obras WHERE data_servico between '{data_inicio}' and '{data_fim}'"))
+            con.commit()
+            df.to_sql('gpm_exportacao_dados_obras', if_exists='append', index=False, con=con)
+            con.execute(text(f"UPDATE data_hora_atualizacoes SET data_hora_atualizacao = '{datetime.strftime(datetime.now(),format='%Y-%m-%d %H:%M:%S')}' WHERE base_atualizada = 'Lançamentos GPM 2.0'"))
+            con.commit()
+            con.close()
+
+        print(f'[{datetime.now().strftime("%H:%M")}] Producão GPM atualizada')
+
+
+    def atualizar_v5(self, aba):
         """
             
             Atualiza as planilhas da V5 com as informações do geoex
 
         """
-        pass
+        sh = self.gspread_service.open_by_key(self.id_planilha_fechamento)
+        v5 = sh.worksheet(aba).get_all_values()
+        v5 = pd.DataFrame(v5, columns=v5.pop(0))
+        projetos = v5['PROJETO']
+        status_estagio_hektor = []
+        auxiliar_hektor = []
+        status_pasta = []
+        
+        for i in projetos:
+            if i != None and i != '':
+                ############################### ATUALIZA STATUS HECKTOR
+                print(i)
+                info_geoex = self.consultar_projeto_geoex(i)
+
+                # Implementar validação de erros!!!
+                if info_geoex != 'erro':
+                    id_projeto = info_geoex['Content']['ProjetoId']
+
+                    if info_geoex['Content']['GseProjeto'] != None:
+                        status_estagio_hektor = info_geoex['Content']['GseProjeto']['Status']['Nome']
+                    else:
+                        status_estagio_hektor = ''
+
+                    if info_geoex['Content']['EnvioPastaStatus'] != None:
+                        status_pasta = info_geoex['Content']['EnvioPastaStatus']
+                    else:
+                        status_pasta = ''
+
+                    info_termo = self.consultar_termo_geoex(id_projeto)
+
+
+                    if info_termo['Content']['Items'] != []:
+                        auxiliar_hektor = info_termo['Content']['Items'][0]['HistoricoStatus']['Nome']
+                    else:
+                        auxiliar_hektor = ''
+
+
+                else:
+                    status_estagio_hektor.append([''])
+                    auxiliar_hektor.append([''])
+                    status_pasta.append([''])
+                
+        sh.worksheet(aba).update('AP2:AP', status_estagio_hektor)
+        sh.worksheet(aba).update('AY2:AY', auxiliar_hektor)
+        sh.worksheet(aba).update('K2:K', status_pasta)
 
 
     def atualizar_acompanhamento_equipes(self):
@@ -458,11 +573,11 @@ class Bob:
 
         carteira = self.gspread_service.open_by_key(self.id_planilha_carteira)
         carteira = carteira.worksheet('CARTEIRA')
-        carteira = carteira.get('A:AS')
+        carteira = carteira.get('A:BF')
         carteira = pd.DataFrame(carteira, columns=carteira.pop(0))
         carteira = carteira[['PROJETO', 'TITULO', 'MUNICÍPIO', 'AR', 'PRIORIDADE', 'UNIDADE', 'LATITUDE', 'LONGITUDE']]
-        carteira = carteira.loc[(carteira['LATITUDE'] != '') & (carteira['LONGITUDE'] != '')]
-        carteira = carteira.loc[(carteira['LATITUDE'] != None) & (carteira['LONGITUDE'] != None)]
+        carteira = carteira.loc[(carteira['LATITUDE'] != '') | (carteira['LONGITUDE'] != '')]
+        carteira = carteira.loc[(carteira['LATITUDE'] != None) | (carteira['LONGITUDE'] != None)] 
         carteira = carteira.drop_duplicates(subset=['PROJETO'])
         carteira = carteira.rename(columns={'PROJETO': 'Projeto'})
 
@@ -502,12 +617,12 @@ class Bob:
 
         acompanhamento_diario_equipes['dta_solicitacao'] = pd.to_datetime(acompanhamento_diario_equipes['dta_solicitacao'], format=('%d-%m-%Y %H:%M:%S'))
         acompanhamento_diario_equipes['Data Execução'] = pd.to_datetime(acompanhamento_diario_equipes['Data Execução'], format=('%d/%m/%Y'))
-        acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace('.', '')
-        acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace(',', '.')
+        # acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace('.', '')
+        # acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace(',', '.')
         # acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace('R$', '')
         # acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace('-', '0')
         # acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].str.replace('', '0')
-        acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].astype(float)
+        # acompanhamento_diario_equipes['Mão de Obra'] = acompanhamento_diario_equipes['Mão de Obra'].astype(float)
 
 
         acompanhamento_diario_equipes['data_hora_localizacao'] = ''
@@ -618,12 +733,16 @@ class Bob:
 
         print(f"[{datetime.strftime(datetime.now(), format='%H:%M')}] Acompanhamento diário atualizado")
 
-        
+
+
+
+
     """
 
     METODOS DE CONSULTA
 
     """
+
 
     def consultar_projeto_geoex(self, projeto):
         url = 'https://geoex.com.br/api/EPS/ConsultarProjeto/Item'
@@ -765,25 +884,11 @@ class Bob:
         return(dados_servico)    
 
 
-    def atualiza_cookie_frotalog(self):
-        # Atualizar cookie
-
-        url = 'https://www.frotalog.com.br/MBServerO/sessionControl.do'
-        data = {
-            'dispatch': 'handleSessions',
-            'userName': 'hugo.viana',
-            'password': '@Sirtec2023',
-        }
-
-        r = requests.post(url, data=data)
-        r = r.headers
-        self.cookie_frotalog = r['set-cookie']
-
     def consultar_localizacao_viatura_frotalog(self, placa):
-        self.atualiza_cookie_frotalog()
+        self.atualizar_cookie_frotalog()
 
         # df_equipes = pd.read_sql_table('equipes', con=self.engine_db)
-        df_equipes = pd.read_excel('placas_veiculos.xlsx')
+        df_equipes = pd.read_excel(os.path.join(self.path, 'placas_veiculos.xlsx'))
         df_equipes = df_equipes.dropna(subset=['Id_frotalog'])
         cod_viatura = df_equipes.loc[df_equipes['Placa'] == placa]['Id_frotalog'].values
         if cod_viatura:
@@ -803,7 +908,7 @@ class Bob:
         r = requests.get(url=url, headers=header)
 
         if r.text == '': # Se não houver retorno da API, atualiza o cookie e tenta novamente
-            self.atualiza_cookie_frotalog()
+            self.atualizar_cookie_frotalog()
             header={'cookie':self.cookie_frotalog}
             r = requests.get(url=url, headers=header)
             if r.text != '':
@@ -868,8 +973,8 @@ class Bob:
         header = {'cookie': self.cookie_gpm}
 
         r = requests.get(url, headers=header)
-        open('Downloads/abertura_turnos.zip', 'wb').write(r.content)
-        df = pd.read_csv('Downloads/abertura_turnos.zip', sep=';', compression='zip', low_memory=False)
+        open(os.path.join(self.path, r'Downloads\abertura_turnos.zip'), 'wb').write(r.content)
+        df = pd.read_csv(os.path.join(self.path, r'Downloads\abertura_turnos.zip'), sep=';', compression='zip', low_memory=False)
 
         return df
 
@@ -884,7 +989,7 @@ class Bob:
             "Data Execução",
             "COVID - Possui algum colaborador da equipe com sintomas?",
             "Equipe possui câmera funcional?",
-            "Qual foi o tema do DDS de hoje?",
+            # "Qual foi o tema do DDS de hoje?",
             "Todos os EPI´s estão em condições de uso (uniformes / isolantes / equipamentos para escalada segura, etc)?",
             "Todos os EPC´s e ferramentas estão em condições de uso (aterramentos temporários, coberturas isolantes, escadas, detector de tensão, etc)?",
             "O veículo está em condições de uso (documentação do veículo  / equipamentos obrigatórios  / sem vazamentos /  sinalização elétrica)?",
@@ -895,8 +1000,9 @@ class Bob:
 
         r = requests.get(url_checklist_ccm, headers=header)
         try:
-            open('Downloads/checklist_diario_ccm.zip', 'wb').write(r.content)
-            df_checklist_diario_ccm = pd.read_csv('Downloads/checklist_diario_ccm.zip', sep=';', compression='zip')
+            open(os.path.join(self.path, r'Downloads\checklist_diario_ccm.zip'), 'wb').write(r.content)
+            df_checklist_diario_ccm = pd.read_csv(os.path.join(self.path, r'Downloads\checklist_diario_ccm.zip'), sep=';', compression='zip')
+            # print(df_checklist_diario_ccm)
             df_checklist_diario_ccm = df_checklist_diario_ccm.drop_duplicates(subset=['Turno'])
             df_checklist_diario_ccm = df_checklist_diario_ccm[colunas]
             return(df_checklist_diario_ccm)
@@ -916,8 +1022,8 @@ class Bob:
         }
 
         r = requests.get(url, headers = header)
-        open("Downloads/Cubo Serviços - GPM.zip", 'wb').write(r.content)
-        df = pd.read_csv('Downloads/Cubo Serviços - GPM.zip', sep=';', compression='zip', low_memory=False)
+        open(os.path.join(self.path, r"Downloads\Cubo Serviços - GPM.zip"), 'wb').write(r.content)
+        df = pd.read_csv(os.path.join(self.path, r"Downloads\Cubo Serviços - GPM.zip"), sep=';', compression='zip', low_memory=False)
 
         return df
     
@@ -938,11 +1044,70 @@ class Bob:
         r = requests.post(url, json=params, headers=header).json()
         link_download = r['Content']['Itens'][0]['Url']
         zip = requests.get(link_download)
-        open('Downloads/projetos_em_curso.zip', 'wb').write(zip.content)
-        df = pd.read_csv('Downloads/projetos_em_curso.zip', sep=';',encoding='ISO-8859-1', compression='zip', low_memory=False)
+        open(os.path.join(self.path, r'Downloads\projetos_em_curso.zip'), 'wb').write(zip.content)
+        df = pd.read_csv(os.path.join(self.path, r'Downloads\projetos_em_curso.zip'), sep=';',encoding='ISO-8859-1', compression='zip', low_memory=False)
         
         return(df)
 
+
+    def consultar_gpm_exportacao_dados_obras(self, data_inicio, data_fim):
+        """
+            Consulta no GPM a pagina:
+                
+                Obras Eletricas >> Relatórios >> Exportação dados obras
+        """
+
+        url = f'https://sirtecba.gpm.srv.br/gpm/geral/exporta_obras_detalhado.php?data_inicial={data_inicio}&data_final={data_fim}&data_inicial_b=&data_final_b=&data_inicial_v=&data_final_v=&data_inicial_d=&data_final_d=&data_inicial_c=&data_final_c=&data_inicial_co=&data_final_co=&cliente=&num_os=&turno=&num_se=&coord=&bairro=&lider=&insp='
+
+        header = {
+            'cookie': self.cookie_gpm
+        }
+
+        r = requests.get(url, headers=header)
+        open(os.path.join(self.path, r'Downloads\relatorio_servicos_gpm.zip'), 'wb').write(r.content)
+
+        df = pd.read_csv(os.path.join(self.path, r'Downloads\relatorio_servicos_gpm.zip'), compression='zip', sep=';', low_memory=False)
+
+        return(df)
+
+
+    def consultar_termo_geoex(self, id_projeto):
+        url = 'https://geoex.com.br/api/ConsultarProjeto/TermoGeo/Itens'
+        body = {
+            'ProjetoId': id_projeto,
+            'Paginacao': {
+                'Pagina': '1',
+                'TotalPorPagina': '10'
+            }
+        }
+        header = {
+            'cookie': self.cookie_geoex
+        }
+
+        resposta = requests.post(url, headers=header, json=body).json()
+
+        return resposta
+
+
+    """
+    
+    OUTROS MÉTODOS
+
+    """
+
+    def atualizar_cookie_frotalog(self):
+        # Atualizar cookie
+
+        url = 'https://www.frotalog.com.br/MBServerO/sessionControl.do'
+        data = {
+            'dispatch': 'handleSessions',
+            'userName': 'hugo.viana',
+            'password': '@Sirtec2023',
+        }
+
+        r = requests.post(url, data=data)
+        r = r.headers
+        self.cookie_frotalog = r['set-cookie']
 
 
     def calcular_distancia_radial(self, coord1, coord2):
@@ -966,3 +1131,23 @@ class Bob:
         distancia = r * c
 
         return distancia/1000 # Retorna valor em Km
+
+
+    def baixar_base_2023(self):
+        print('Lendo a planilha...')
+        gs = gspread.service_account(filename=os.path.join(self.path, 'service_account.json'))
+        sh = gs.open_by_key(self.id_planilha_carteira)
+        ws = sh.worksheet("CARTEIRA")
+
+        carteira = pd.DataFrame(ws.get_all_records())
+        carteira = carteira.loc[carteira['PROJETO'] != '']
+
+        ws = sh.worksheet("PROGRAMAÇÃO")
+        programacao = pd.DataFrame(ws.get_all_records())
+        programacao = programacao.loc[programacao['Projeto'] != '']
+
+        print('Gerando excel...')
+        # carteira.to_excel('BASE 2023.xlsx', index=False)
+        with pd.ExcelWriter(os.path.join(self.path,r'Downloads\BASE 2023.xlsx'), engine='xlsxwriter') as writer:
+            carteira.to_excel(writer, sheet_name='CARTEIRA', index=False)
+            programacao.to_excel(writer, sheet_name='PROGRAMAÇÃO', index=False)
