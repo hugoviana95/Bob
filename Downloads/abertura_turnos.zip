@@ -1,0 +1,4 @@
+<script>
+                var x = window.open('../../index.php?relogin=2', '_blank', 'dependent=yes,width=800,height=600,scrollbars=yes,statusbar=no,resizable=yes');
+                x.moveTo(window.parent.screenX + 50, window.parent.screenY + 50);
+            </script>
